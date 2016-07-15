@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Proximity Sensor Tool</string>
+
+    <string name="activity_diagnostics">Diagnostics</string>
+    <string name="activity_calibration">Calibration</string>
+
+    <string name="msg_block">Cover the sensor area completely with your finger (the sensor area is shown in the image above), then press the OK button.</string>
+    <string name="msg_reading">Checking...</string>
+    <string name="msg_unblock">Remove your finger from the sensor area and press the OK button.</string>
+    <string name="msg_cal">Calibrating...</string>
+    <string name="msg_calibration_success">Calibration successful! Press the OK button to finalize the calibration process and to reboot your Fairphone.</string>
+    <string name="msg_step_success">Successful</string>
+    <string name="msg_fail">Unsuccessful</string>
+    <string name="name_read">OK</string>
+    <string name="name_exit">Exit</string>
+    <string name="msg_fail_block">Something went wrong, please try again. Make sure you cover the sensor area completely.</string>
+    <string name="msg_fail_cal">Calibration unsuccessful, please check assemble...</string>
+    <string name="msg_fail_unlock">Something went wrong, please try again. Make sure to remove your finger from the sensor area and that the screen is clean.</string>
+    <string name="msg_fail_write_sns">Encountering unexpected permission issue...</string>
+
+    <string name='not_triggered'>Not triggered</string>
+    <string name='state'>State: </string>
+    <string name='sensor_value'>Sensor value: </string>
+    <string name='block_value'>Block value: </string>
+    <string name='unblock_value'>Unlock value: </string>
+
+    <string name="step_1">Step 1</string>
+    <string name="step_2">Step 2</string>
+    <string name="step_3">Step 3</string>
+</resources>
