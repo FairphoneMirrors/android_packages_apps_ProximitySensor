@@ -18,7 +18,6 @@ public class DiagnosticsActivity extends Activity {
     private SensorManager mSensorManager;
     private Sensor mProximitySensor;
 
-    private ActionBar mActionBar;
     private TextView mSensorValueTextView;
     private TextView mBlockValueTextView;
     private TextView mUnblockValueTextView;
@@ -51,7 +50,7 @@ public class DiagnosticsActivity extends Activity {
         startSensorMonitor();
     }
 
-    Runnable mSensorMonitor = new Runnable() {
+    private final Runnable mSensorMonitor = new Runnable() {
         @Override
         public void run() {
             try {
@@ -74,7 +73,7 @@ public class DiagnosticsActivity extends Activity {
         mSensorMonitor.run();
     }
 
-    void stopSensorMonitor() {
+    private void stopSensorMonitor() {
         mHandler.removeCallbacks(mSensorMonitor);
     }
 

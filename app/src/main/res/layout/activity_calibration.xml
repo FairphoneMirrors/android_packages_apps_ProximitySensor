@@ -1,99 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:padding="15dp">
+    android:background="@color/colorFP2Background">
 
-    <ImageView
-        android:id="@+id/instructionImage"
-        android:src="@drawable/top_image_psensor"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/colorFP2HeaderBackground">
 
-    <TextView
-        android:id="@+id/step1_text"
-        android:layout_below="@+id/instructionImage"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        style="@android:style/TextAppearance.Medium"
-        android:textStyle="bold"
-        android:text="@string/step_1" />
+        <TextView
+            android:text="@string/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@color/colorPrimary"
+            android:textSize="30sp"/>
 
-    <TextView
-        android:id="@+id/step1"
-        android:layout_below="@+id/step1_text"
-        android:layout_gravity="fill"
-        android:layout_width="250dp"
-        android:layout_height="75dp"
-        android:text="@string/msg_block" />
+    </RelativeLayout>
 
-    <Button
-        android:id="@+id/btn1"
-        android:layout_below="@+id/step1_text"
-        android:layout_marginLeft="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/name_read"
-        android:layout_alignTop="@+id/step1"
-        android:layout_toEndOf="@+id/step1"/>
+    <ViewFlipper
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/viewFlipper"
+        android:background="@color/colorFP2Background" />
 
-    <TextView
-        android:id="@+id/step2_text"
-        android:layout_below="@+id/step1"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        style="@android:style/TextAppearance.Medium"
-        android:textStyle="bold"
-        android:text="@string/step_2" />
-
-    <TextView
-        android:id="@+id/step2"
-        android:layout_below="@+id/step2_text"
-        android:layout_gravity="fill"
-        android:layout_width="250dp"
-        android:layout_height="75dp"
-        android:text="@string/msg_unblock" />
-
-    <Button
-        android:id="@+id/btn2"
-        android:layout_below="@+id/step2_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:text="@string/name_read"
-        android:layout_alignTop="@+id/step2"
-        android:layout_toEndOf="@+id/step2"/>
-
-    <TextView
-        android:id="@+id/step3_text"
-        android:layout_below="@+id/step2"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        style="@android:style/TextAppearance.Medium"
-        android:textStyle="bold"
-        android:text="@string/step_3" />
-
-    <TextView
-        android:id="@+id/step3"
-        android:layout_below="@+id/step3_text"
-        android:layout_gravity="fill"
-        android:layout_width="250dp"
-        android:layout_height="75dp"
-        android:text="@string/msg_calibration_success" />
-
-    <Button
-        android:id="@+id/btn3"
-        android:layout_below="@+id/step3_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:text="@string/name_read"
-        android:layout_alignTop="@+id/step3"
-        android:layout_toEndOf="@+id/step3"/>
-
-</RelativeLayout>
+</LinearLayout>

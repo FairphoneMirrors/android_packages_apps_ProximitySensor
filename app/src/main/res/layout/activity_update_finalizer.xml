@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_update_finalizer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.fairphone.psensor.UpdateFinalizerActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/colorFP2HeaderBackground">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/colorPrimary"
+                android:textSize="36sp"
+                android:text="@string/Heading"
+                tools:text="@string/Heading" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorFP2Background">
+
+            <Button
+                android:id="@+id/button_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="34dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/colorPrimary"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/next"
+                android:textColor="@color/colorFP2ButtonText"
+                android:textSize="24sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/button_next"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="32dp">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="50dp"
+                    android:text="@string/greating"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorFP2Text"
+                    android:textIsSelectable="false"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:typeface="sans" />
+
+                <TextView
+                    android:id="@+id/maintext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/textView2"
+                    android:layout_below="@+id/textView2"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="sans-serif-light"
+                    android:lineSpacingExtra="3sp"
+                    android:text="@string/Text"
+                    android:textColor="@color/colorFP2Text"
+                    android:textSize="15sp" />
+
+                <CheckBox
+                    android:text="@string/dontshowagain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/checkBoxSuppress"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/colorFP2Text"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignEnd="@+id/maintext" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

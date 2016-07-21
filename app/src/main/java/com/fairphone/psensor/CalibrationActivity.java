@@ -1,48 +1,49 @@
 
 package com.fairphone.psensor;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
-import com.android.mmilib.tools.ActivityHelper;
-import com.android.mmilib.utils.Common;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
-import java.util.List;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * 1. Hint user block sensor and read value. if less than 230, hint and wait confirm. <BR>
  * 2. Hint user unblock sensor and read value. if greater than 96, hint and wait confirm. <BR>
  * 3. Use the value of unblock to do the calibration. value+30 as far, value+60 as near. <BR>
  * 4. Write far and near value to /persist/sns.reg binary file. <BR>
- * 5. The file of sns.reg content as "0000100: 0a3c 0000 <near> <far> 6400 6400 01c0 0000" <BR>
- * @param <StatusBarManager>
- * 
+ * 5. The file of sns.reg content as "0000100: 0a3c 0000 <near> <far> 6400 6400 01c0 0000" <BR> 
  */
-public class CalibrationActivity<StatusBarManager> extends Activity {
+public class CalibrationActivity extends Activity {
     private static final String TAG = CalibrationActivity.class.getSimpleName();
 
-    private static final String CAL_FLIE = "/persist/sns.reg";
+    private static final String CALIBRATION_FILE = "/persist/sns.reg";
     private static final String CMD = "senread";
     private static final String RESULT_PREFIX = "[RESULT]";
-    public static final int OFFSET_FAR = 20;
-    public static final int OFFSET_NEAR = 30;
-    public static final int BLOCK_LIMIT = 235;
-    public static final int UNBLOCK_LIMIT = 180;
+    private static final int DEFAULT_OFFSET = 0x3;
+    protected static final int OFFSET_FAR = 20;
+    protected static final int OFFSET_NEAR = 30;
+    protected static final int BLOCK_LIMIT = 235;
+    protected static final int UNBLOCK_LIMIT = 180;
     private static final int SEEK_NEAR = 0x00000100 + 4;
     private static final int SEEK_FAR = 0x00000100 + 6;
-
-    // in future, can use this to save cal offset...can be set according unblock value. currenly it is hard code as 4 in adsp code
-    // private static final int SEEK_OFFSET = 0x00000020 + 8;
+    private static final int SEEK_OFFSET = 0x00000020 + 8;
 
     private static final int STATE_START = 0;
     private static final int STATE_BLOCK = 11;
@@ -56,7 +57,7 @@ public class CalibrationActivity<StatusBarManager> extends Activity {
     private static final int STATE_FAIL = 5;
     private static final int STATE_FAIL_STEP_2 = 6;
 
-    public static final int DELAY = 1000;
+    protected static final int DELAY = 1000;
 
     private Handler mHandler;
     private TextView mStep1;
@@ -69,67 +70,82 @@ public class CalibrationActivity<StatusBarManager> extends Activity {
     private TextView mText3;
     private Button mButton3;
 
-    public int mDataFar;
-    public int mDataNear;
+    private int mDataFar;
+    private int mDataNear;
     private int mState = STATE_START;
 
-    private ActionBar mActionBar;
+    private ViewFlipper mFlipper;
+    private View mViewStep1;
+    private View mViewStep2;
+    private View mViewStep3;
+    private ProgressBar mProgressBar1;
+    private ProgressBar mProgressBar2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = new Handler();
+
+        mHandler=new Handler();
+
         setContentView(R.layout.activity_calibration);
 
-//        mActionBar = getActionBar();
-//        if (mActionBar != null) {
-//            mActionBar.setDisplayHomeAsUpEnabled(true);
-//            mActionBar.setHomeButtonEnabled(true);
-//        }
+        mFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
-        ActivityHelper helper = new ActivityHelper(this);
-        mStep1 = helper.getTextView(R.id.step1_text);
-        mText1 = helper.getTextView(R.id.step1);
-        mButton1 = helper.getButton(R.id.btn1);
+        mFlipper.setInAnimation(this, R.anim.slide_in_from_left);
+        mFlipper.setOutAnimation(this, R.anim.slide_out_to_right);
+
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        mViewStep1 = inflater.inflate(R.layout.view_calibration_step,null);
+        mViewStep2 = inflater.inflate(R.layout.view_calibration_step,null);
+        mViewStep3 = inflater.inflate(R.layout.view_calibration_step,null);
+
+        mFlipper.addView(mViewStep1);
+        mFlipper.addView(mViewStep2);
+        mFlipper.addView(mViewStep3);
+
+
+        mStep1 = (TextView) mViewStep1.findViewById(R.id.textview_heading);
+        mText1 = (TextView) mViewStep1.findViewById(R.id.maintext);
+        mButton1 = (Button) mViewStep1.findViewById(R.id.button);
+        mProgressBar1 = (ProgressBar) mViewStep1.findViewById(R.id.progressBar);
+        mProgressBar1.setVisibility(View.INVISIBLE);
+
         mButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeState(STATE_BLOCK_READ);
             }
         });
-        mStep2 = helper.getTextView(R.id.step2_text);
-        mText2 = helper.getTextView(R.id.step2);
-        mButton2 = helper.getButton(R.id.btn2);
+        mStep2 = (TextView) mViewStep2.findViewById(R.id.textview_heading);
+        mText2 = (TextView) mViewStep2.findViewById(R.id.maintext);
+        mButton2 = (Button) mViewStep2.findViewById(R.id.button);
+        mStep2.setText(getText(R.string.step_2));
+        mText2.setText(getText(R.string.msg_unblock));
+        mProgressBar2 = (ProgressBar) mViewStep2.findViewById(R.id.progressBar);
+        mProgressBar1.setVisibility(View.INVISIBLE);
+
         mButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeState(STATE_UNBLOCK_READ);
             }
         });
-        mStep3 = helper.getTextView(R.id.step3_text);
-        mText3 = helper.getTextView(R.id.step3);
-        mButton3 = helper.getButton(R.id.btn3);
+        mStep3 = (TextView) mViewStep3.findViewById(R.id.textview_heading);
+        mText3 = (TextView) mViewStep3.findViewById(R.id.maintext);
+        mButton3 = (Button) mViewStep3.findViewById(R.id.button);
+        mStep3.setText(getText(R.string.step_3));
+        mText3.setText(getText(R.string.msg_calibration_success));
+        mButton3.setText(R.string.reboot);
+
         mButton3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mFlipper.showNext();
                 PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                powerManager.reboot(null);
-            }
+                powerManager.reboot(null);            }
         });
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mButton1.setOnClickListener(null);
-        Log.d(TAG, "onPause");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
-        changeState(STATE_START);
     }
 
     private void changeState(int state) {
@@ -150,10 +166,9 @@ public class CalibrationActivity<StatusBarManager> extends Activity {
                 break;
             case STATE_BLOCK_WARN:
             case STATE_UNBLOCK:
-                updateToUnlock();
+                updateToUnblock();
                 break;
             case STATE_UNBLOCK_READ:
-
                 updateToUnblockRead();
                 break;
             case STATE_UNBLOCK_WARN:
@@ -176,41 +191,42 @@ public class CalibrationActivity<StatusBarManager> extends Activity {
 
     private void updateToBlock() {
         //mText1.setText(getString(R.string.msg_block));
+        mFlipper.setDisplayedChild(0);
+
         mStep1.setEnabled(true);
         mText1.setEnabled(true);
         mButton1.setEnabled(true);
-
-        mStep2.setEnabled(false);
-        mText2.setEnabled(false);
-        mText2.setText(R.string.msg_unblock);
-        mButton2.setEnabled(false);
-        mStep3.setEnabled(false);
-        mText3.setEnabled(false);
-        mText3.setText(R.string.msg_calibration_success);
-        mButton3.setEnabled(false);
+        mProgressBar1.setVisibility(View.INVISIBLE);
     }
 
     private void updateToBlockRead() {
         mText1.setText(getString(R.string.msg_reading));
         mButton1.setEnabled(false);
-        mHandler.post(new Runnable() {
+        mProgressBar1.setVisibility(View.VISIBLE);
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                int value = read();
-                Log.d(TAG, "block value=" + value);
 
-                Common.sleep(DELAY);
-                if (value >= BLOCK_LIMIT) {
-                    mDataNear = value - OFFSET_NEAR;
-                    Log.d(TAG, "near value = " + mDataNear);
-                    Log.d(TAG, "changen to STATE_UNBLOCK");
-                    changeState(STATE_UNBLOCK);
-                } else {
-                    mText1.setText(getString(R.string.msg_fail_block));
-                    changeState(STATE_FAIL);
-                }
+                final int value = read();
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "block value=" + value);
+                        sleep(DELAY);
+                        if (value >= BLOCK_LIMIT) {
+                            mDataNear = value - OFFSET_NEAR;
+                            Log.d(TAG, "near value = " + mDataNear);
+                            Log.d(TAG, "change to STATE_UNBLOCK");
+                            changeState(STATE_UNBLOCK);
+                        } else {
+                            mText1.setText(getString(R.string.msg_fail_block));
+                            changeState(STATE_FAIL);
+                        }
+                    }
+                });
             }
-        });
+        }).start();
     }
 
     private void updateToCal() {
@@ -221,7 +237,7 @@ public class CalibrationActivity<StatusBarManager> extends Activity {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                Common.sleep(DELAY);
+                sleep(DELAY);
                 if (write()) {
                     mText3.setText(getString(R.string.msg_calibration_success));
                     mButton3.setEnabled(true);
@@ -235,19 +251,19 @@ public class CalibrationActivity<StatusBarManager> extends Activity {
     }
 
     private void updateToFail() {
-        // mText.setText(getString(R.string.msg_fail));
         mButton1.setEnabled(true);
         changeState(STATE_BLOCK);
     }
 
     private void updateToFailStep2() {
-        // mText.setText(getString(R.string.msg_fail));
+        mText2.setText(getString(R.string.msg_fail_unlock));
         mButton2.setEnabled(true);
         changeState(STATE_UNBLOCK);
     }
 
     private void updateToSuccess() {
-        // mText.setText(getString(R.string.msg_success));
+        mFlipper.setDisplayedChild(2);
+        setSuccesfullyCalibrated(this, true);
         mText2.setText(R.string.msg_step_success);
         mButton3.setEnabled(true);
     }
@@ -255,12 +271,13 @@ public class CalibrationActivity<StatusBarManager> extends Activity {
     private void updateToUnblockRead() {
         mText2.setText(getString(R.string.msg_reading));
         mButton2.setEnabled(false);
-        mHandler.post(new Runnable() {
+        mProgressBar2.setVisibility(View.VISIBLE);
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 int value = read();
                 Log.d(TAG, "unblock value=" + value);
-                Common.sleep(DELAY);
+                sleep(DELAY);
 
                 //cal far value
                 mDataFar = mDataNear - OFFSET_FAR;
@@ -273,40 +290,46 @@ public class CalibrationActivity<StatusBarManager> extends Activity {
                     // following cal method can adjust based on actual test result
                     // if(mDataNear > mDataFar && ((mDataNear - mDataFar) > 20)) {
                     Log.d(TAG, "pass--cal " + (mDataNear - mDataFar));
-                    changeState(STATE_CAL);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            changeState(STATE_CAL);
+                        }
+                    });
                     //    }
                 } else {
                     Log.d(TAG, "Fail--cal " + (mDataNear - mDataFar));
-                    mText2.setText(getString(R.string.msg_fail_unlock));
-                    changeState(STATE_FAIL_STEP_2);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mText2.setText(getString(R.string.msg_fail_unlock));
+                            changeState(STATE_FAIL_STEP_2);
+                        }
+                    });
                 }
             }
-        });
+        }).start();
     }
 
-    private void updateToUnlock() {
-        mText1.setText(R.string.msg_step_success);
+    @Override
+    protected void onPause() {
+        UpdateFinalizerService.startActionCheckCalibrationPending(this);
+        super.onPause();
+    }
+
+    private void updateToUnblock() {
+        mFlipper.setDisplayedChild(1);
+        mProgressBar2.setVisibility(View.INVISIBLE);
         mStep2.setEnabled(true);
         mText2.setEnabled(true);
         mButton2.setEnabled(true);
     }
 
     public static int read() {
-        List<String> lines = Common.execAs(CMD);
+        String line = exec(CMD);
         String data = null;
-        if (lines != null && lines.size() > 0) {
-            for (String line : lines) {
-                if (TextUtils.isEmpty(line)) {
-                    continue;
-                }
-                if (line.startsWith(RESULT_PREFIX)) {
-                    data = line.replace(RESULT_PREFIX, "").trim();
-                    break;
-                }
-            }
-        }
-        if (TextUtils.isEmpty(data)) {
-            return -1;
+        if (line.startsWith(RESULT_PREFIX)) {
+            data = line.replace(RESULT_PREFIX, "").trim();
         }
         try {
             return Integer.parseInt(data);
@@ -316,23 +339,49 @@ public class CalibrationActivity<StatusBarManager> extends Activity {
         return -1;
     }
 
-    private boolean write() {
-        byte[] far = Common.toBytes(mDataFar);
-        byte[] near = Common.toBytes(mDataNear);
-        //  byte[] offset =  Common.toBytes(0x04);
-        Log.d(TAG, "far data  = " + Common.toHexString(far));
-        Log.d(TAG, "near data = " + Common.toHexString(near));
+    private void logPreviousValues() {
+        byte[] buffer = new byte[2];
         try {
-            RandomAccessFile file = new RandomAccessFile(CAL_FLIE, "rw");
+            RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "rw");
+            file.seek(SEEK_NEAR);
+
+            file.read(buffer, 0, 2);
+            Log.d(getString(R.string.logtag), "old near data  = " + String.format("%%02x%02x", buffer[1], buffer[0]));
+            file.seek(SEEK_FAR);
+            file.read(buffer, 0, 2);
+            Log.d(getString(R.string.logtag), "old far data  = " + String.format("%%02x%02x", buffer[1], buffer[0]));
+            file.seek(SEEK_OFFSET);
+            file.read(buffer, 0, 2);
+            Log.d(getString(R.string.logtag), "old offset data  = " + String.format("%%02x%02x", buffer[1], buffer[0]));
+            file.close();
+        } catch (Exception e) {
+            Log.wtf(TAG, e);
+        }
+    }
+
+
+    private boolean write() {
+        byte[] far  = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(mDataFar).array();
+        byte[] near = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(mDataNear).array();
+        byte[] offset = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(DEFAULT_OFFSET).array();
+
+        logPreviousValues();
+
+        Log.d(getString(R.string.logtag), "far data  = " + String.format("%%02x%02x", far[1], far[0]));
+        Log.d(getString(R.string.logtag), "near data = " + String.format("%02x%02x", near[1], near[0]));
+        Log.d(getString(R.string.logtag), "offset data = " + String.format("%02x%02x", offset[1], offset[0]));
+
+        try {
+            RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "rw");
             file.seek(SEEK_NEAR);
             file.writeByte(near[0]);
             file.writeByte(near[1]);
             file.seek(SEEK_FAR);
             file.writeByte(far[0]);
             file.writeByte(far[1]);
-           /* file.seek(SEEK_OFFSET);
+            file.seek(SEEK_OFFSET);
             file.writeByte(offset[0]);
-            file.writeByte(offset[1]);*/
+            file.writeByte(offset[1]);
             file.close();
             return true;
         } catch (Exception e) {
@@ -340,4 +389,53 @@ public class CalibrationActivity<StatusBarManager> extends Activity {
         }
         return false;
     }
+
+    private static String exec(String cmd) {
+        try {
+            Process proc = Runtime.getRuntime().exec(new String[]{cmd});
+            BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            return reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static void sleep(int time) {
+        try {
+            Thread.sleep(time);
+        } catch (Exception e) {
+
+        }
+    }
+
+    protected static void setSuccesfullyCalibrated(Context ctx, boolean isSuccessfullyCalibrated) {
+        SharedPreferences sharedPref = ctx.getSharedPreferences(
+                ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(ctx.getString(R.string.preference_successfully_calibrated),isSuccessfullyCalibrated);
+        editor.apply();
+    }
+
+    protected static boolean hasToBeCalibrated(Context ctx) {
+        SharedPreferences sharedPref = ctx.getSharedPreferences(
+                ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
+        boolean wasCalibrated = sharedPref.getBoolean(ctx.getString(R.string.preference_successfully_calibrated),false);
+        boolean wasCalibratedEarlier = false;
+        try {
+            RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "rw");
+            file.seek(SEEK_NEAR);
+            file.seek(SEEK_OFFSET);
+            byte offset0 = file.readByte();
+            byte offset1 = file.readByte();
+            file.close();
+            /* offset is only 0 on devices that have not been calibrated. */
+            wasCalibratedEarlier = (offset0 != 0 || offset1 != 0);
+        } catch (Exception e) {
+            Log.wtf(TAG, e);
+        }
+        return !wasCalibrated;
+    }
+
+
 }

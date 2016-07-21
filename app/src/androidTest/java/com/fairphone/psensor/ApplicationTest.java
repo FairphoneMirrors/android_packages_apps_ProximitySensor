@@ -1,4 +1,4 @@
-package com.fairphone.sensorcal;
+package com.fairphone.psensor;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -20,25 +20,25 @@ RES_DIR := app/src/main/res
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_STATIC_JAVA_LIBRARIES := android-common android-support-v4 mmilib
+LOCAL_JAVA_LIBRARIES := android-common
 
-LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(RES_DIR))
+LOCAL_STATIC_JAVA_LIBRARIES := android-support-v7-appcompat \
+                               android-support-v4
+
+
+LOCAL_RESOURCE_DIR := frameworks/support/v7/appcompat/res \
+                      $(addprefix $(LOCAL_PATH)/, $(RES_DIR))
+
 LOCAL_SRC_FILES := $(call all-java-files-under, app/src/main/java) $(call all-renderscript-files-under, app/src/main/java)
-#LOCAL_SDK_VERSION := current
+LOCAL_SDK_VERSION := current
 
 LOCAL_MANIFEST_FILE := app/src/main/AndroidManifest.xml
 
 LOCAL_PACKAGE_NAME := ProximitySensorTools
-LOCAL_CERTIFICATE := platform
 
+LOCAL_CERTIFICATE := platform
 LOCAL_PRIVILEGED_MODULE := true
 
+LOCAL_AAPT_FLAGS := --auto-add-overlay
+LOCAL_AAPT_FLAGS += --extra-packages android.support.v7.appcompat
 include $(BUILD_PACKAGE)
-
-include $(CLEAR_VARS)
-
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := mmilib:app/libs/mmilib.jar
-
-include $(BUILD_MULTI_PREBUILT)
-
-include $(call all-makefiles-under,$(LOCAL_PATH))

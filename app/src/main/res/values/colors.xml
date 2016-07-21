@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Palette colors referenced by top-level themes. -->
-    <color name="theme_primary">#ff263238</color>
-    <color name="theme_primary_dark">#ff21272b</color>
-    <color name="theme_accent">#ff009688</color>
+    <!-- Palette colors referenced by top-level themes.-->
 
-    <color name="switchbar_background_color">#ff37474f</color>
+    <color name="theme_primary">#2aa8e0</color>
+    <color name="theme_primary_dark">#000000</color>
+    <color name="theme_accent">#f286b6</color>
+
+    <color name="switchbar_background_color">#2aa8e0</color>
+    <color name="colorPrimary">#2aa8e0</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#f286b6</color>
+
+    <color name="colorFP2HeaderBackground">#f7f7f7</color>
+    <color name="colorFP2Background">#f0f0f0</color>
+    <color name="colorFP2Text">#123c59</color>
+    <color name="colorFP2ButtonText">#f7f7f7</color>
+    <color name="colorFP2Gray">#a7a7a7</color>
+
+
 </resources>

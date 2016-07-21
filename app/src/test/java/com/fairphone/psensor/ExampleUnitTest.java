@@ -1,4 +1,4 @@
-package com.fairphone.sensorcal;
+package com.fairphone.psensor;
 
 import org.junit.Test;
 
