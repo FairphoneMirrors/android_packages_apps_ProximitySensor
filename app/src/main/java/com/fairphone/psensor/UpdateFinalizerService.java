@@ -102,7 +102,7 @@ public class UpdateFinalizerService extends IntentService {
         Log.d(getString(R.string.logtag), "Update not yet Finalized... Setting Notification.");
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0, getUpdateFinalizerActivity(), PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder  notBuilder = new NotificationCompat.Builder(this);
-        notBuilder.setContentTitle("Finalizing Update");
+        notBuilder.setContentTitle(getString(R.string.NotificationTitle));
         notBuilder.setStyle(new NotificationCompat.BigTextStyle()
                 .bigText(getString(R.string.NotificationText)));
         notBuilder.setSmallIcon(R.drawable.ic_stat_action_info);
