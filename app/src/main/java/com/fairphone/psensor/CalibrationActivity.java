@@ -212,12 +212,10 @@ public class CalibrationActivity extends Activity {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "block value=" + value);
+                        Log.d(TAG, "block value   = " + String.format("%3d", value) + " (" + String.format("0x%04x", value) + ")");
                         sleep(DELAY);
                         if (value >= BLOCK_LIMIT) {
                             mDataNear = value - OFFSET_NEAR;
-                            Log.d(TAG, "near value = " + mDataNear);
-                            Log.d(TAG, "change to STATE_UNBLOCK");
                             changeState(STATE_UNBLOCK);
                         } else {
                             mText1.setText(getString(R.string.msg_fail_block));
@@ -276,7 +274,7 @@ public class CalibrationActivity extends Activity {
             @Override
             public void run() {
                 int value = read();
-                Log.d(TAG, "unblock value=" + value);
+                Log.d(TAG, "unblock value = " + String.format("%3d", value) + " (" + String.format("0x%04x", value) + ")");
                 sleep(DELAY);
 
                 //cal far value
@@ -285,11 +283,8 @@ public class CalibrationActivity extends Activity {
                 if (value >= 0 && value < (mDataNear + OFFSET_NEAR - 5)) {
                     mDataFar = mDataNear - OFFSET_FAR;
                     //mDataNear = value + OFFSET_NEAR;
-                    Log.d(TAG, "far value  = " + mDataFar);
-                    // Log.d(TAG, "near value = " + mDataNear);
                     // following cal method can adjust based on actual test result
                     // if(mDataNear > mDataFar && ((mDataNear - mDataFar) > 20)) {
-                    Log.d(TAG, "pass--cal " + (mDataNear - mDataFar));
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -298,7 +293,6 @@ public class CalibrationActivity extends Activity {
                     });
                     //    }
                 } else {
-                    Log.d(TAG, "Fail--cal " + (mDataNear - mDataFar));
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -340,19 +334,22 @@ public class CalibrationActivity extends Activity {
     }
 
     private void logPreviousValues() {
-        byte[] buffer = new byte[2];
+        byte[] buffer = new byte[4];
         try {
-            RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "rw");
-            file.seek(SEEK_NEAR);
+            RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "r");
 
+            file.seek(SEEK_NEAR);
             file.read(buffer, 0, 2);
-            Log.d(getString(R.string.logtag), "old near data  = " + String.format("%%02x%02x", buffer[1], buffer[0]));
+            Log.d(getString(R.string.logtag), "old near data   = " + String.format("%3d", ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt()) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
+
             file.seek(SEEK_FAR);
             file.read(buffer, 0, 2);
-            Log.d(getString(R.string.logtag), "old far data  = " + String.format("%%02x%02x", buffer[1], buffer[0]));
+            Log.d(getString(R.string.logtag), "old far data    = " + String.format("%3d", ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt()) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
+
             file.seek(SEEK_OFFSET);
             file.read(buffer, 0, 2);
-            Log.d(getString(R.string.logtag), "old offset data  = " + String.format("%%02x%02x", buffer[1], buffer[0]));
+            Log.d(getString(R.string.logtag), "old offset data = " + String.format("%3d", ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt()) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
+
             file.close();
         } catch (Exception e) {
             Log.wtf(TAG, e);
@@ -367,9 +364,9 @@ public class CalibrationActivity extends Activity {
 
         logPreviousValues();
 
-        Log.d(getString(R.string.logtag), "far data  = " + String.format("%%02x%02x", far[1], far[0]));
-        Log.d(getString(R.string.logtag), "near data = " + String.format("%02x%02x", near[1], near[0]));
-        Log.d(getString(R.string.logtag), "offset data = " + String.format("%02x%02x", offset[1], offset[0]));
+        Log.d(getString(R.string.logtag), "near data   = " + String.format("%3d", mDataNear) + " (" + String.format("0x%02x%02x", near[1], near[0]) + ")");
+        Log.d(getString(R.string.logtag), "far data    = " + String.format("%3d", mDataFar) + " (" + String.format("0x%02x%02x", far[1], far[0]) + ")");
+        Log.d(getString(R.string.logtag), "offset data = " + String.format("%3d", DEFAULT_OFFSET) + " (" + String.format("0x%02x%02x", offset[1], offset[0]) + ")");
 
         try {
             RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "rw");
