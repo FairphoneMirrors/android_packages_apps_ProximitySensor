@@ -28,7 +28,7 @@ import java.nio.ByteOrder;
  * 2. Hint user unblock sensor and read value. if greater than 96, hint and wait confirm. <BR>
  * 3. Use the value of unblock to do the calibration. value+30 as far, value+60 as near. <BR>
  * 4. Write far and near value to /persist/sns.reg binary file. <BR>
- * 5. The file of sns.reg content as "0000100: 0a3c 0000 <near> <far> 6400 6400 01c0 0000" <BR> 
+ * 5. The file of sns.reg content as "0000100: 0a3c 0000 <near> <far> 6400 6400 01c0 0000" <BR>
  */
 public class CalibrationActivity extends Activity {
     private static final String TAG = CalibrationActivity.class.getSimpleName();
@@ -36,8 +36,8 @@ public class CalibrationActivity extends Activity {
     private static final String CALIBRATION_FILE = "/persist/sns.reg";
     private static final String CMD = "senread";
     private static final String RESULT_PREFIX = "[RESULT]";
-    private static final int DEFAULT_OFFSET = 0x3;
-    protected static final int OFFSET_FAR = 20;
+    private static final int DEFAULT_OFFSET = 0x0001;
+    protected static final int OFFSET_FAR = 30;
     protected static final int OFFSET_NEAR = 30;
     protected static final int BLOCK_LIMIT = 235;
     protected static final int UNBLOCK_LIMIT = 180;
