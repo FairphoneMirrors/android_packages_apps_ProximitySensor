@@ -282,7 +282,7 @@ public class CalibrationActivity extends Activity {
                 //cal far value
                 mDataFar = mDataNear - OFFSET_FAR;
                 //Set the limitation to allow user debug
-                if (value >= 0 && value <= UNBLOCK_LIMIT && mDataFar > UNBLOCK_LIMIT) {
+                if (value >= 0 && value < (mDataNear + OFFSET_NEAR - 5)) {
                     mDataFar = mDataNear - OFFSET_FAR;
                     //mDataNear = value + OFFSET_NEAR;
                     Log.d(TAG, "far value  = " + mDataFar);
