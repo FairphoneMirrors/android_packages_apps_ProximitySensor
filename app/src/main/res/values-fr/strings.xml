@@ -35,6 +35,6 @@
     <string name="unblock_value">Valeur à l\'état «libre»:</string>
     <string name="cancel">Annuler</string>
     <string name="NotificationTitle">Calibration du capteur de proximité</string>
-    <string name="ask_really_dont_show_text"><![CDATA[La calibration du capteur de proximité est simple à réaliser and améliorera votre confort d'appel. <it>Vous pouvez (re-)calibrer le capteur de proximité à n'importe quel moment via Paramètres → Maintenance → Capteur de proximité</it>.]]></string>
+    <string name="ask_really_dont_show_text"><![CDATA[La calibration du capteur de proximité est simple à réaliser and améliorera votre confort d\'appel. <it>Vous pouvez (re-)calibrer le capteur de proximité à n\'importe quel moment via Paramètres → Maintenance → Capteur de proximité</it>.]]></string>
     <string name="not_triggered">Non activé</string>
 </resources>
