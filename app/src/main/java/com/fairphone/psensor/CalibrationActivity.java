@@ -206,7 +206,6 @@ public class CalibrationActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 final int value = read();
 
                 mHandler.post(new Runnable() {
@@ -273,34 +272,22 @@ public class CalibrationActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int value = read();
-                Log.d(TAG, "unblock value = " + String.format("%3d", value) + " (" + String.format("0x%04x", value) + ")");
-                sleep(DELAY);
+                final int value = read();
 
-                //cal far value
-                mDataFar = mDataNear - OFFSET_FAR;
-                //Set the limitation to allow user debug
-                if (value >= 0 && value < (mDataNear + OFFSET_NEAR - 5)) {
-                    mDataFar = mDataNear - OFFSET_FAR;
-                    //mDataNear = value + OFFSET_NEAR;
-                    // following cal method can adjust based on actual test result
-                    // if(mDataNear > mDataFar && ((mDataNear - mDataFar) > 20)) {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "unblock value = " + String.format("%3d", value) + " (" + String.format("0x%04x", value) + ")");
+                        sleep(DELAY);
+                        if (value >= 0 && value < (mDataNear + OFFSET_NEAR - 5)) {
+                            mDataFar = mDataNear - OFFSET_FAR;
                             changeState(STATE_CAL);
+                        } else {
+                            mText1.setText(getString(R.string.msg_fail_unlock));
+                            changeState(STATE_FAIL);
                         }
-                    });
-                    //    }
-                } else {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mText2.setText(getString(R.string.msg_fail_unlock));
-                            changeState(STATE_FAIL_STEP_2);
-                        }
-                    });
-                }
+                    }
+                });
             }
         }).start();
     }
