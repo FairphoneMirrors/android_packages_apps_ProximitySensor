@@ -319,17 +319,22 @@ public class CalibrationActivity extends Activity {
     }
 
     public static int read() {
-        String line = exec(CMD);
-        String data = null;
-        if (line.startsWith(RESULT_PREFIX)) {
-            data = line.replace(RESULT_PREFIX, "").trim();
+        final String line = exec(CMD);
+        int result = -1;
+
+        if (line == null) {
+            // something went wrong with CMD, are we allowed to execute it?
+            Log.e(TAG, "Could not read sensor value");
+
+            // TODO display an error message
+        } else if (line.startsWith(RESULT_PREFIX)) {
+            try {
+                result = Integer.parseInt( line.replace(RESULT_PREFIX, "").trim() );
+            } catch (Exception e) {
+                Log.wtf(TAG, e);
+            }
         }
-        try {
-            return Integer.parseInt(data);
-        } catch (Exception e) {
-            Log.wtf(TAG, e);
-        }
-        return -1;
+        return result;
     }
 
     private void getPersistedValues() {
@@ -427,7 +432,7 @@ public class CalibrationActivity extends Activity {
             BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             return reader.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.wtf(TAG, "Could not execute command `" + cmd + "`", e);
             return null;
         }
     }
