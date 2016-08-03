@@ -2,12 +2,15 @@
 package com.fairphone.psensor;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+
+import com.fairphone.psensor.CalibrationContract.CalibrationData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -375,11 +380,45 @@ public class CalibrationActivity extends Activity {
             file.writeByte(offset[0]);
             file.writeByte(offset[1]);
             file.close();
+            storeCalibrationData();
             return true;
         } catch (Exception e) {
             Log.wtf(TAG, e);
         }
         return false;
+    }
+
+    private void storeCalibrationData() {
+        CalibrationDbHelper mDbHelper = new CalibrationDbHelper(this);
+
+        // Gets the data repository in write mode
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(CalibrationData.COLUMN_NAME_PREVIOUS_NEAR, mPersistedDataNear);
+        values.put(CalibrationData.COLUMN_NAME_PREVIOUS_FAR, mPersistedDataFar);
+        values.put(CalibrationData.COLUMN_NAME_PREVIOUS_OFFSET, mPersistedDataOffset);
+        values.put(CalibrationData.COLUMN_NAME_NEAR, mDataNear);
+        values.put(CalibrationData.COLUMN_NAME_FAR, mDataFar);
+        values.put(CalibrationData.COLUMN_NAME_OFFSET, mDataOffset);
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        int verCode = pInfo.versionCode;
+        values.put(CalibrationData.COLUMN_NAME_APP_VERSION, verCode);
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId;
+        newRowId = db.insert(
+                CalibrationData.TABLE_NAME,
+                null,
+                values);
+
     }
 
     private static String exec(String cmd) {
