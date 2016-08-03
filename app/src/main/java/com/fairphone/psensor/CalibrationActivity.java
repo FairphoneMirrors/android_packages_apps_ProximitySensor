@@ -70,8 +70,12 @@ public class CalibrationActivity extends Activity {
     private TextView mText3;
     private Button mButton3;
 
+    private int mPersistedDataFar;
+    private int mPersistedDataNear;
+    private int mPersistedDataOffset;
     private int mDataFar;
     private int mDataNear;
+    private int mDataOffset;
     private int mState = STATE_START;
 
     private ViewFlipper mFlipper;
@@ -85,6 +89,8 @@ public class CalibrationActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getPersistedValues();
 
         mHandler=new Handler();
 
@@ -281,6 +287,7 @@ public class CalibrationActivity extends Activity {
                         sleep(DELAY);
                         if (value >= 0 && value < (mDataNear + OFFSET_NEAR - 5)) {
                             mDataFar = mDataNear - OFFSET_FAR;
+                            mDataOffset = DEFAULT_OFFSET;
                             changeState(STATE_CAL);
                         } else {
                             mText1.setText(getString(R.string.msg_fail_unlock));
@@ -320,22 +327,25 @@ public class CalibrationActivity extends Activity {
         return -1;
     }
 
-    private void logPreviousValues() {
+    private void getPersistedValues() {
         byte[] buffer = new byte[4];
         try {
             RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "r");
 
             file.seek(SEEK_NEAR);
             file.read(buffer, 0, 2);
-            Log.d(getString(R.string.logtag), "old near data   = " + String.format("%3d", ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt()) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
+            mPersistedDataNear = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
+            Log.d(getString(R.string.logtag), "persisted near data   = " + String.format("%3d", mPersistedDataNear) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
 
             file.seek(SEEK_FAR);
             file.read(buffer, 0, 2);
-            Log.d(getString(R.string.logtag), "old far data    = " + String.format("%3d", ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt()) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
+            mPersistedDataFar = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
+            Log.d(getString(R.string.logtag), "persisted far data    = " + String.format("%3d", mPersistedDataFar) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
 
             file.seek(SEEK_OFFSET);
             file.read(buffer, 0, 2);
-            Log.d(getString(R.string.logtag), "old offset data = " + String.format("%3d", ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt()) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
+            mPersistedDataOffset = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
+            Log.d(getString(R.string.logtag), "persisted offset data = " + String.format("%3d", mPersistedDataOffset) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
 
             file.close();
         } catch (Exception e) {
@@ -347,13 +357,11 @@ public class CalibrationActivity extends Activity {
     private boolean write() {
         byte[] far  = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(mDataFar).array();
         byte[] near = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(mDataNear).array();
-        byte[] offset = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(DEFAULT_OFFSET).array();
-
-        logPreviousValues();
+        byte[] offset = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(mDataOffset).array();
 
         Log.d(getString(R.string.logtag), "near data   = " + String.format("%3d", mDataNear) + " (" + String.format("0x%02x%02x", near[1], near[0]) + ")");
         Log.d(getString(R.string.logtag), "far data    = " + String.format("%3d", mDataFar) + " (" + String.format("0x%02x%02x", far[1], far[0]) + ")");
-        Log.d(getString(R.string.logtag), "offset data = " + String.format("%3d", DEFAULT_OFFSET) + " (" + String.format("0x%02x%02x", offset[1], offset[0]) + ")");
+        Log.d(getString(R.string.logtag), "offset data = " + String.format("%3d", mDataOffset) + " (" + String.format("0x%02x%02x", offset[1], offset[0]) + ")");
 
         try {
             RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "rw");
@@ -420,6 +428,5 @@ public class CalibrationActivity extends Activity {
         }
         return !wasCalibrated;
     }
-
 
 }
