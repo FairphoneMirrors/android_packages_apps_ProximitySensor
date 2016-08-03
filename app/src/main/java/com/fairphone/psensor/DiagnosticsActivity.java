@@ -63,7 +63,7 @@ public class DiagnosticsActivity extends Activity {
                     }
                 });
             } finally {
-                mHandler.postDelayed(mSensorMonitor, CalibrationActivity.DELAY);
+                mHandler.post(mSensorMonitor);
             }
 
         }

@@ -44,6 +44,8 @@ public class CalibrationActivity extends Activity {
     private static final int DEFAULT_OFFSET = 0x0001;
     protected static final int OFFSET_FAR = 30;
     protected static final int OFFSET_NEAR = 30;
+    protected static final int READ_MIN_LIMIT = 0;
+    protected static final int READ_MAX_LIMIT = 255;
     protected static final int BLOCK_LIMIT = 235;
     protected static final int UNBLOCK_LIMIT = 180;
     private static final int SEEK_NEAR = 0x00000100 + 4;
@@ -62,7 +64,8 @@ public class CalibrationActivity extends Activity {
     private static final int STATE_FAIL = 5;
     private static final int STATE_FAIL_STEP_2 = 6;
 
-    protected static final int DELAY = 1000;
+    protected static final int READ_N_TIMES = 3;
+    protected static final int READ_DELAY = 500;
 
     private Handler mHandler;
     private TextView mStep1;
@@ -217,13 +220,13 @@ public class CalibrationActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final int value = read();
+                final int value = read(BLOCK_LIMIT, READ_MAX_LIMIT);
 
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         Log.d(TAG, "block value   = " + String.format("%3d", value) + " (" + String.format("0x%04x", value) + ")");
-                        sleep(DELAY);
+
                         if (value >= BLOCK_LIMIT) {
                             mDataNear = value - OFFSET_NEAR;
                             changeState(STATE_UNBLOCK);
@@ -245,7 +248,6 @@ public class CalibrationActivity extends Activity {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                sleep(DELAY);
                 if (write()) {
                     mText3.setText(getString(R.string.msg_calibration_success));
                     mButton3.setEnabled(true);
@@ -283,14 +285,13 @@ public class CalibrationActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final int value = read();
+                final int value = read(READ_MIN_LIMIT, (mDataNear + OFFSET_NEAR - 5));
 
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         Log.d(TAG, "unblock value = " + String.format("%3d", value) + " (" + String.format("0x%04x", value) + ")");
-                        sleep(DELAY);
-                        if (value >= 0 && value < (mDataNear + OFFSET_NEAR - 5)) {
+                        if (value >= 0 && value <= (mDataNear + OFFSET_NEAR - 5)) {
                             mDataFar = mDataNear - OFFSET_FAR;
                             mDataOffset = DEFAULT_OFFSET;
                             changeState(STATE_CAL);
@@ -318,23 +319,84 @@ public class CalibrationActivity extends Activity {
         mButton2.setEnabled(true);
     }
 
+    /**
+     * Call to read(1, {@link #READ_MIN_LIMIT}, {@link #READ_MAX_LIMIT})
+     *
+     * @return The value read or -1 if read failed.
+     * @see #read(int, int, int)
+     */
     public static int read() {
-        final String line = exec(CMD);
-        int result = -1;
+        return read(1, READ_MIN_LIMIT, READ_MAX_LIMIT);
+    }
 
-        if (line == null) {
-            // something went wrong with CMD, are we allowed to execute it?
-            Log.e(TAG, "Could not read sensor value");
+    /**
+     * Call to read({@link #READ_N_TIMES}, min_value, max_value)
+     *
+     * @param min_value The lower threshold (inclusive) of accepted range.
+     * @param max_value The upper threshold (inclusive) of accepted range.
+     * @return The mean of all the value read (up to {@link #READ_N_TIMES}) or -1 if no read succeeded.
+     * @see #read(int, int, int)
+     */
+    public static int read(int min_value, int max_value) {
+        return read(READ_N_TIMES, min_value, max_value);
+    }
 
-            // TODO display an error message
-        } else if (line.startsWith(RESULT_PREFIX)) {
+    /**
+     * Read the proximity sensor value read_times times and return the mean value.
+     *
+     * Wait {@link #READ_DELAY} between each read, even if there is only one read planned.
+     *
+     * @param min_value The lower threshold (inclusive) of accepted range.
+     * @param max_value The upper threshold (inclusive) of accepted range.
+     * @return The mean of all the value read (up to {@link #READ_N_TIMES}) or -1 if no read succeeded.
+     */
+    public static int read(int read_times, int min_value, int max_value) {
+        String line;
+        int result;
+        int summed_result = 0;
+        int nb_result_read = 0;
+        int final_result = -1;
+
+        for (int i = 0; i < read_times; i++) {
+            line = exec(CMD);
+
+            if (line != null && line.startsWith(RESULT_PREFIX)) {
+                try {
+                    result = Integer.parseInt( line.replace(RESULT_PREFIX, "").trim() );
+
+                    if (min_value <= result && result <= max_value) {
+                        summed_result += result;
+                        nb_result_read++;
+                    } else {
+                        Log.d(TAG, "Ignored value out of accepted range (" + result + " not in [" + min_value + "," + max_value + "])");
+                    }
+                } catch (Exception e) {
+                    Log.wtf(TAG, e);
+                }
+            }
+
+            // wait a bit between two sensor read
             try {
-                result = Integer.parseInt( line.replace(RESULT_PREFIX, "").trim() );
+                Thread.sleep(READ_DELAY);
             } catch (Exception e) {
                 Log.wtf(TAG, e);
             }
         }
-        return result;
+
+        if (nb_result_read == 0) {
+            // something went wrong with CMD, are we allowed to execute it?
+            Log.e(TAG, "Could not read sensor value " + read_times + " " + ((read_times==1) ? "time" : "times"));
+
+            // TODO display an error message
+        } else {
+            if (nb_result_read < read_times) {
+                Log.w(TAG, "Read " + nb_result_read + "/" + read_times + " values");
+            }
+
+            final_result = Math.round(summed_result / nb_result_read);
+        }
+
+        return final_result;
     }
 
     private void getPersistedValues() {
@@ -434,14 +496,6 @@ public class CalibrationActivity extends Activity {
         } catch (IOException e) {
             Log.wtf(TAG, "Could not execute command `" + cmd + "`", e);
             return null;
-        }
-    }
-
-    private static void sleep(int time) {
-        try {
-            Thread.sleep(time);
-        } catch (Exception e) {
-
         }
     }
 
