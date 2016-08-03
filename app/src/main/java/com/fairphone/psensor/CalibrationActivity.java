@@ -297,7 +297,7 @@ public class CalibrationActivity extends Activity {
                             changeState(STATE_CAL);
                         } else {
                             mText1.setText(getString(R.string.msg_fail_unlock));
-                            changeState(STATE_FAIL);
+                            changeState(STATE_FAIL_STEP_2);
                         }
                     }
                 });
