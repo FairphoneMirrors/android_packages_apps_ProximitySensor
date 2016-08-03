@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Afstandssensor gereedschap</string>
+    <string name="Exit">Sluit</string>
+    <string name="Heading">Een laatste stap…</string>
+    <string name="NotificationText">Kalibreer de afstandssensor van je toestel.</string>
+    <string name="OK">OK</string>
+    <string name="activity_calibration">Kalibrering</string>
+    <string name="activity_diagnostics">Diagnostiek</string>
+    <string name="ask_really_dont_show_title">Weet je het zeker?</string>
+    <string name="block_value">Blokkeer waarde:</string>
+    <string name="cancel">Annuleer</string>
+    <string name="dontshowagain">Dit scherm niet meer tonen.</string>
+    <string name="greating">Afstandssensor kalibratie</string>
+    <string name="msg_block">Bedek de sensor volledig met je vinger (het sensor gebied is weergegeven in de afbeelding hierboven) en druk vervolgens op de OK knop.</string>
+    <string name="msg_cal">Kalibreren…</string>
+    <string name="msg_calibration_success"><![CDATA[Kalibratie succesvol! Druk op de OK & Herstart knop om de kalibratie af te ronden en je Fairphone te herstarten.]]></string>
+    <string name="Text"><![CDATA[ <p>Fairphone OS geeft je nu de mogelijkheid om de afstandssensor te kalibreren - dit verbetert het gedrag van de sensor tijdens een telefoongesprek (scherm uit/aan).</p> <p>We raden je aan de afstandssensor te kaliberen - dit is eenvoudig en zo gepiept!</p>]]></string>
+    <string name="msg_fail">Onsuccesvol</string>
+    <string name="msg_fail_block">Er is iets misgegaan, probeer het opnieuw. Zorg ervoor dat je de sensor volledig bedekt.</string>
+    <string name="msg_fail_cal">Kalibratie onsuccesvol. Controleer het toestel en probeer opnieuw.</string>
+    <string name="msg_fail_unlock">Er is iets misgegaan, probeer het opnieuw. Zorg ervoor dat je vinger is verwijderd van de sensor en dat het scherm schoon is.</string>
+    <string name="msg_fail_write_sns">Er is onverwacht een permissie probleem opgetreden…</string>
+    <string name="msg_reading">Controleren…</string>
+    <string name="msg_step_success">Succesvol</string>
+    <string name="msg_unblock">Verwijder je vinger van de sensor en druk op de OK knop.</string>
+    <string name="name_exit">Sluit</string>
+    <string name="name_read">OK</string>
+    <string name="next">Volgende</string>
+    <string name="not_triggered">Niet geactiveerd </string>
+    <string name="reboot"><![CDATA[OK & Herstart]]></string>
+    <string name="unblock_value">Ontgrendel waarde:</string>
+    <string name="step_3">Stap 3</string>
+    <string name="step_2">Stap 2</string>
+    <string name="step_1">Stap 1</string>
+    <string name="state">Status</string>
+    <string name="sensor_value">Sensor waarde:</string>
+    <string name="ask_really_dont_show_text"><![CDATA[Het kalibreren van de afstandssensor is eenvoudig en verbetert het scherm gedrag tijdens een telefoongesprek (scherm uit/aan). <it>Je kunt de afstandssensor op een later tijdstip kalibreren onder Instellingen → Onderhoud → Afstandssensor gereedschap</it>.]]></string>
+    <string name="NotificationTitle">Afstandssensor kalibratie</string>
+</resources>

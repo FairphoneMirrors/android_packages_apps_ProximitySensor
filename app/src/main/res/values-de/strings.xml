@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Näherungssensorwerkzeug</string>
+    <string name="Exit">Schließen</string>
+    <string name="Heading">Noch ein letzter Schritt…</string>
+    <string name="NotificationText">Kalibriere den Näherungssensor deines Fairphones.</string>
+    <string name="OK">OK</string>
+    <string name="Text"><![CDATA[ <p>Fairphone OS enthält jetzt die Möglichkeit den Näherungssensor zu kalibrieren. Die Kalibrierung verbessert das Verhalten des Näherungssensors während Telefonaten (der Bildschirm wird aus- und eingeschaltet wenn das Fairphone während dem Telefonat ans Ohr gehalten und wieder weggenommen wird).</p> <p>Wir empfehlen den Näherungssensor jetzt zu kalibrieren um das beste Ergebnis zu erhalten - das ist einfach und in wenigen Sekunden erledigt!</p>]]></string>
+    <string name="activity_calibration">Kalibrierung</string>
+    <string name="activity_diagnostics">Diagnostik</string>
+    <string name="ask_really_dont_show_title">Bist du sicher?</string>
+    <string name="ask_really_dont_show_text"><![CDATA[Die Kalibrierung des Näherungssensors ist einfach und verbessert Bildschirmverhalten während Telefonaten. <it>Du kannst die Kalibrierung jederzeit in Einstellungen → Wartung → Nähesensorwerkzeug starten</it>.]]></string>
+    <string name="block_value">Wert wenn abgedeckt:</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="dontshowagain">Diese Meldung künftig nicht mehr zeigen.</string>
+    <string name="greating">Näherungssensorkalibrierung</string>
+    <string name="msg_block">Decke den Sensorbereich komplett mit deinem Finger ab (der Sensorbereich ist im obigen Bild hervorgehoben) und drücke gleichzeitig auf OK.</string>
+    <string name="msg_cal">Kalibrieren...</string>
+    <string name="msg_calibration_success"><![CDATA[Kalibrierung erfolgreich. Drücke auf "OK & Neustart" um die Kalibrierung abzuschließen und dein Fairphone neu zu starten.]]></string>
+    <string name="reboot"><![CDATA[OK & Neustart]]></string>
+    <string name="msg_fail">Fehler</string>
+    <string name="msg_fail_block">Hier ging was schief. Bitte probier es noch einmal. Achte darauf den Sensorbereich komplett abzudecken.</string>
+    <string name="msg_fail_cal">Kalibrierung fehlgeschlagen. Bitte überprüfe das Gerät und versuch es noch einmal.</string>
+    <string name="msg_fail_unlock">Hier ging was schief. Bitte probier es noch einmal. Stelle sicher, dass der Sensorbereich frei und der Bildschirm sauber sind.</string>
+    <string name="msg_fail_write_sns">Ein unerwartetes Problem mit Rechten ist aufgetreten...</string>
+    <string name="msg_reading">Lesen...</string>
+    <string name="msg_step_success">Fertig</string>
+    <string name="msg_unblock">Entferne deinen Finger vom Sensorbereich und drücke danach auf OK.</string>
+    <string name="name_exit">Schließen</string>
+    <string name="name_read">OK</string>
+    <string name="next">Weiter</string>
+    <string name="not_triggered">Nicht aktiviert</string>
+    <string name="sensor_value">Sensorwert:</string>
+    <string name="state">Status:</string>
+    <string name="step_1">Schritt 1</string>
+    <string name="step_2">Schritt 2</string>
+    <string name="step_3">Schritt 3</string>
+    <string name="unblock_value">Wert wenn frei:</string>
+    <string name="NotificationTitle">Näherungssensorkalibrierung</string>
+</resources>
