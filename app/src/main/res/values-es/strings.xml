@@ -6,16 +6,16 @@
     <string name="Text"><![CDATA[ <p>Fairphone OS te da la opción de calibrar el sensor de proximidad - esto mejorará el funcionamiento del sensor mientras haces una llamada (la pantalla se encenderá cuando terminas la llamada).</p> <p>Te recomendamos calibrar el sensor de proximidad ahora para tener el mejor funcionamiento - es fácil y rápido!</p>]]></string>
     <string name="activity_calibration">Calibración</string>
     <string name="activity_diagnostics">Diagnóstico</string>
-    <string name="msg_block">Cubre el area del sensor de proximidad con el dedo (el area a cubrir esta indicada en la imagen superior), luego pulsa OK.</string>
+    <string name="msg_block">Cubre el área del sensor de proximidad con el dedo (el área a cubrir esta indicada en la imagen superior), luego pulsa OK.</string>
     <string name="msg_cal">Calibrando…</string>
     <string name="msg_calibration_success"><![CDATA[Calibración lista! Pulsa OK para finalizar el proceso y reiniciar tu Fairphone.]]></string>
     <string name="msg_step_success">Listo</string>
     <string name="msg_fail">Fallido</string>
-    <string name="msg_fail_block">Ha habido un error; por favor inténtalo de nuevo. Asegúrate de cubrir el area del sensor completamente. </string>
+    <string name="msg_fail_block">Ha habido un error; por favor inténtalo de nuevo. Asegúrate de cubrir el área del sensor completamente. </string>
     <string name="msg_fail_cal">Calibración fallida. Comprueba el teléfono e inténtalo de nuevo.</string>
     <string name="msg_fail_unlock">Algo ha fallado. Por favor inténtalo de nuevo. Asegúrate de que el sensor de proximidad no está cubierto y la pantalla esta limpia.</string>
-    <string name="msg_fail_write_sns">Problema inesperado de permisos...</string>
-    <string name="msg_reading">En proceso...</string>
+    <string name="msg_fail_write_sns">Problema inesperado de permisos…</string>
+    <string name="msg_reading">En proceso…</string>
     <string name="msg_unblock">Retira el dedo del sensor y pulsa OK.</string>
     <string name="name_exit">Salir</string>
     <string name="name_read">OK</string>
@@ -36,5 +36,5 @@
     <string name="ask_really_dont_show_title">¿Estás seguro?</string>
     <string name="ask_really_dont_show_text"><![CDATA[Calibrar el sensor de proximidad es fácil y mejorará tu experiencia cuando llames. <it>Puedes calibrar el sensor de proximidad en otro momento en Ajustes → Mantenimiento  → Herramienta Sensor de Proximidad</it>.]]></string>
     <string name="block_value">Valor de bloqueo:</string>
-    <string name="Heading">Una cosa más...</string>
+    <string name="Heading">Una cosa más…</string>
 </resources>
