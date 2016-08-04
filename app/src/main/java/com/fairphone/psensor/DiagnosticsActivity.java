@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.fairphone.psensor.helper.ProximitySensorHelper;
+
 public class DiagnosticsActivity extends Activity {
 
     private int mSensorChangeCount = 0;
@@ -26,10 +28,16 @@ public class DiagnosticsActivity extends Activity {
 
     private Handler mHandler;
 
+    private ProximitySensorConfiguration mPersistedConfiguration;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mPersistedConfiguration = ProximitySensorConfiguration.readFromMemory();
         mHandler = new Handler();
+
+
         setContentView(R.layout.activity_diagnostics);
 
 //        mActionBar = getActionBar();
@@ -42,8 +50,8 @@ public class DiagnosticsActivity extends Activity {
         mBlockValueTextView = (TextView)findViewById(R.id.blockValue);
         mUnblockValueTextView = (TextView)findViewById(R.id.unblockValue);
 
-        mBlockValueTextView.setText(String.valueOf(CalibrationActivity.BLOCK_LIMIT - CalibrationActivity.NEAR_THRESHOLD_FROM_BLOCKED_VALUE));
-        mUnblockValueTextView.setText(String.valueOf(CalibrationActivity.UNBLOCK_LIMIT - CalibrationActivity.FAR_THRESHOLD_FROM_NEAR_THRESHOLD));
+        mBlockValueTextView.setText(mPersistedConfiguration.nearThreshold);
+        mUnblockValueTextView.setText(mPersistedConfiguration.farThreshold);
 
         getProximitySensor();
         setupSensorStateListener();
@@ -54,7 +62,7 @@ public class DiagnosticsActivity extends Activity {
         @Override
         public void run() {
             try {
-                sensorValue = CalibrationActivity.read();
+                sensorValue = ProximitySensorHelper.read();
                 Log.i(DiagnosticsActivity.class.getName(), String.valueOf(sensorValue));
                 runOnUiThread(new Runnable() {
                     @Override

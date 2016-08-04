@@ -19,13 +19,8 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.fairphone.psensor.CalibrationContract.CalibrationData;
+import com.fairphone.psensor.helper.ProximitySensorHelper;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Locale;
 
 /**
@@ -34,9 +29,6 @@ import java.util.Locale;
  * 3. Use the value of unblock to do the calibration. value+30 as far, value+60 as near. <BR>
  * 4. Write far and near value to /persist/sns.reg binary file. <BR>
  * 5. The file of sns.reg content as "0000100: 0a3c 0000 <near> <far> 6400 6400 01c0 0000" <BR>
- * <br>
- * Using the vendor wording, the "near threshold" is the "Proximity Interrupt High threshold", the "far threshold"
- * is the "Proximity Interrupt LOW threshold", and the "offset compensation" is thr "Proximity Offset Compensation".
  */
 public class CalibrationActivity extends Activity {
     private static final String TAG = CalibrationActivity.class.getSimpleName();
@@ -55,47 +47,6 @@ public class CalibrationActivity extends Activity {
     private static final int STATE_FAIL_STEP_2 = 6;
 
     /**
-     * Path to the persisted calibration file.
-     */
-    private static final String CALIBRATION_FILE = "/persist/sns.reg";
-    /**
-     * Command to read the sensor value.
-     */
-    private static final String READ_COMMAND = "senread";
-    /**
-     * Result prefix returned by the reading command.
-     */
-    private static final String READ_COMMAND_RESULT_PREFIX = "[RESULT]";
-
-    /**
-     * Amount of times to perform a sensor reading.
-     */
-    private static final int READ_N_TIMES = 3;
-    /**
-     * Time to wait between two sensor readings (in milliseconds).
-     */
-    private static final int READ_DELAY_MS = 500;
-    /**
-     * Minimal value to accept as valid from the sensor reading (in sensor units).
-     */
-    public static final int READ_MIN_LIMIT = 0;
-    /**
-     * Maximal value to accept as valid from the sensor reading (in sensor units).
-     */
-    public static final int READ_MAX_LIMIT = 255;
-    /**
-     * Offset in the calibration file to reach the near threshold value.
-     */
-    private static final int NEAR_THRESHOLD_OFFSET = 0x00000100 + 4;
-    /**
-     * Offset in the calibration file to reach the far threshold value.
-     */
-    private static final int FAR_THRESHOLD_OFFSET = 0x00000100 + 6;
-    /**
-     * Offset in the calibration file to reach the offset compensation value.
-     */
-    private static final int OFFSET_COMPENSATION_OFFSET = 0x00000120 + 8;
-    /**
      * Value to compute the near threshold from the blocked value (in sensor units).
      */
     public static final int NEAR_THRESHOLD_FROM_BLOCKED_VALUE = 30;
@@ -111,17 +62,9 @@ public class CalibrationActivity extends Activity {
      * Maximal accepted value for the non-blocked value (in sensor units).
      */
     public static final int UNBLOCK_LIMIT = 180;
-    /**
-     * Default value for the offset compensation.
-     */
-    private static final int DEFAULT_OFFSET_COMPENSATION = 0x01;
 
-    private int mPersistedDataFar;
-    private int mPersistedDataNear;
-    private int mPersistedDataOffset;
-    private int mDataFar;
-    private int mDataNear;
-    private int mDataOffset;
+    private ProximitySensorConfiguration mPersistedConfiguration;
+    private ProximitySensorConfiguration mCalibratedConfiguration;
 
     private int mState = STATE_START;
     private Handler mHandler;
@@ -147,7 +90,8 @@ public class CalibrationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getPersistedValues();
+        mPersistedConfiguration = ProximitySensorConfiguration.readFromMemory();
+        mCalibratedConfiguration = new ProximitySensorConfiguration();
 
         mHandler = new Handler();
 
@@ -271,7 +215,7 @@ public class CalibrationActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final int value = read(BLOCK_LIMIT, READ_MAX_LIMIT);
+                final int value = ProximitySensorHelper.read(BLOCK_LIMIT, ProximitySensorHelper.READ_MAX_LIMIT);
 
                 mHandler.post(new Runnable() {
                     @Override
@@ -279,7 +223,7 @@ public class CalibrationActivity extends Activity {
                         Log.d(TAG, "    blocked value = " + String.format(Locale.ENGLISH, "%3d", value));
 
                         if (value >= BLOCK_LIMIT) {
-                            mDataNear = value - NEAR_THRESHOLD_FROM_BLOCKED_VALUE;
+                            mCalibratedConfiguration.nearThreshold = value - NEAR_THRESHOLD_FROM_BLOCKED_VALUE;
                             changeState(STATE_UNBLOCK);
                         } else {
                             mText1.setText(getString(R.string.msg_fail_block));
@@ -299,7 +243,8 @@ public class CalibrationActivity extends Activity {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (write()) {
+                if (mCalibratedConfiguration.persistToMemory()) {
+                    storeCalibrationData();
                     mText3.setText(getString(R.string.msg_calibration_success));
                     mButton3.setEnabled(true);
                     changeState(STATE_SUCCESS);
@@ -336,16 +281,15 @@ public class CalibrationActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final int value = read(READ_MIN_LIMIT, (mDataNear + NEAR_THRESHOLD_FROM_BLOCKED_VALUE - 5));
+                final int value = ProximitySensorHelper.read(ProximitySensorHelper.READ_MIN_LIMIT, (mCalibratedConfiguration.nearThreshold + NEAR_THRESHOLD_FROM_BLOCKED_VALUE - 5));
 
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         Log.d(TAG, "non-blocked value = " + String.format(Locale.ENGLISH, "%3d", value));
 
-                        if (value >= 0 && value <= (mDataNear + NEAR_THRESHOLD_FROM_BLOCKED_VALUE - 5)) {
-                            mDataFar = mDataNear - FAR_THRESHOLD_FROM_NEAR_THRESHOLD;
-                            mDataOffset = DEFAULT_OFFSET_COMPENSATION;
+                        if (value >= 0 && value <= (mCalibratedConfiguration.nearThreshold + NEAR_THRESHOLD_FROM_BLOCKED_VALUE - 5)) {
+                            mCalibratedConfiguration.farThreshold = mCalibratedConfiguration.nearThreshold - FAR_THRESHOLD_FROM_NEAR_THRESHOLD;
                             changeState(STATE_CAL);
                         } else {
                             mText1.setText(getString(R.string.msg_fail_unlock));
@@ -371,143 +315,6 @@ public class CalibrationActivity extends Activity {
         mButton2.setEnabled(true);
     }
 
-    /**
-     * Call to read(1, {@link #READ_MIN_LIMIT}, {@link #READ_MAX_LIMIT})
-     *
-     * @return The value read or -1 if read failed.
-     * @see #read(int, int, int)
-     */
-    public static int read() {
-        return read(1, READ_MIN_LIMIT, READ_MAX_LIMIT);
-    }
-
-    /**
-     * Call to read({@link #READ_N_TIMES}, min_value, max_value)
-     *
-     * @param min_value The lower threshold (inclusive) of accepted range.
-     * @param max_value The upper threshold (inclusive) of accepted range.
-     * @return The mean of all the value read (up to {@link #READ_N_TIMES}) or -1 if no read succeeded.
-     * @see #read(int, int, int)
-     */
-    public static int read(int min_value, int max_value) {
-        return read(READ_N_TIMES, min_value, max_value);
-    }
-
-    /**
-     * Read the proximity sensor value read_times times and return the mean value.
-     * <p/>
-     * Wait {@link #READ_DELAY_MS} between each read, even if there is only one read planned.
-     *
-     * @param min_value The lower threshold (inclusive) of accepted range.
-     * @param max_value The upper threshold (inclusive) of accepted range.
-     * @return The mean of all the value read (up to {@link #READ_N_TIMES}) or -1 if no read succeeded.
-     */
-    public static int read(int read_times, int min_value, int max_value) {
-        String line;
-        int result;
-        int summed_result = 0;
-        int nb_result_read = 0;
-        int final_result = -1;
-
-        for (int i = 0; i < read_times; i++) {
-            line = exec(READ_COMMAND);
-
-            if (line != null && line.startsWith(READ_COMMAND_RESULT_PREFIX)) {
-                try {
-                    result = Integer.parseInt(line.replace(READ_COMMAND_RESULT_PREFIX, "").trim());
-
-                    if (min_value <= result && result <= max_value) {
-                        summed_result += result;
-                        nb_result_read++;
-                    } else {
-                        Log.d(TAG, "Ignored value out of accepted range (" + result + " not in [" + min_value + "," + max_value + "])");
-                    }
-                } catch (Exception e) {
-                    Log.wtf(TAG, e);
-                }
-            }
-
-            // wait a bit between two sensor read
-            try {
-                Thread.sleep(READ_DELAY_MS);
-            } catch (Exception e) {
-                Log.wtf(TAG, e);
-            }
-        }
-
-        if (nb_result_read == 0) {
-            // something went wrong with READ_COMMAND, are we allowed to execute it?
-            Log.e(TAG, "Could not read sensor value " + read_times + " " + ((read_times == 1) ? "time" : "times"));
-
-            // TODO display an error message
-        } else {
-            if (nb_result_read < read_times) {
-                Log.w(TAG, "Read " + nb_result_read + "/" + read_times + " values");
-            }
-
-            final_result = Math.round(summed_result / nb_result_read);
-        }
-
-        return final_result;
-    }
-
-    private void getPersistedValues() {
-        byte[] buffer = new byte[4];
-        buffer[2] = 0x00;
-        buffer[3] = 0x00;
-        try {
-            RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "r");
-
-            file.seek(NEAR_THRESHOLD_OFFSET);
-            file.read(buffer, 0, 2);
-            mPersistedDataNear = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
-            Log.d(getString(R.string.logtag), "persisted near data   = " + String.format("%3d", mPersistedDataNear) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
-
-            file.seek(FAR_THRESHOLD_OFFSET);
-            file.read(buffer, 0, 2);
-            mPersistedDataFar = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
-            Log.d(getString(R.string.logtag), "persisted far data    = " + String.format("%3d", mPersistedDataFar) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
-
-            file.seek(OFFSET_COMPENSATION_OFFSET);
-            file.read(buffer, 0, 1);
-            buffer[1] = 0x00;
-            mPersistedDataOffset = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
-            Log.d(getString(R.string.logtag), "persisted offset data = " + String.format("%3d", mPersistedDataOffset) + " (" + String.format("0x%02x", buffer[0]) + ")");
-
-            file.close();
-        } catch (Exception e) {
-            Log.wtf(TAG, e);
-        }
-    }
-
-    private boolean write() {
-        byte[] far = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(mDataFar).array();
-        byte[] near = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(mDataNear).array();
-        byte[] offset = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(mDataOffset).array();
-
-        Log.d(getString(R.string.logtag), "near data   = " + String.format("%3d", mDataNear) + " (" + String.format("0x%02x%02x", near[1], near[0]) + ")");
-        Log.d(getString(R.string.logtag), "far data    = " + String.format("%3d", mDataFar) + " (" + String.format("0x%02x%02x", far[1], far[0]) + ")");
-        Log.d(getString(R.string.logtag), "offset data = " + String.format("%3d", mDataOffset) + " (" + String.format("0x%02x", offset[0]) + ")");
-
-        try {
-            RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "rw");
-            file.seek(NEAR_THRESHOLD_OFFSET);
-            file.writeByte(near[0]);
-            file.writeByte(near[1]);
-            file.seek(FAR_THRESHOLD_OFFSET);
-            file.writeByte(far[0]);
-            file.writeByte(far[1]);
-            file.seek(OFFSET_COMPENSATION_OFFSET);
-            file.writeByte(offset[0]);
-            file.close();
-            storeCalibrationData();
-            return true;
-        } catch (Exception e) {
-            Log.wtf(TAG, e);
-        }
-        return false;
-    }
-
     private void storeCalibrationData() {
         CalibrationDbHelper mDbHelper = new CalibrationDbHelper(this);
 
@@ -516,12 +323,12 @@ public class CalibrationActivity extends Activity {
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(CalibrationData.COLUMN_NAME_PREVIOUS_NEAR, mPersistedDataNear);
-        values.put(CalibrationData.COLUMN_NAME_PREVIOUS_FAR, mPersistedDataFar);
-        values.put(CalibrationData.COLUMN_NAME_PREVIOUS_OFFSET, mPersistedDataOffset);
-        values.put(CalibrationData.COLUMN_NAME_NEAR, mDataNear);
-        values.put(CalibrationData.COLUMN_NAME_FAR, mDataFar);
-        values.put(CalibrationData.COLUMN_NAME_OFFSET, mDataOffset);
+        values.put(CalibrationData.COLUMN_NAME_PREVIOUS_NEAR, mPersistedConfiguration.nearThreshold);
+        values.put(CalibrationData.COLUMN_NAME_PREVIOUS_FAR, mPersistedConfiguration.farThreshold);
+        values.put(CalibrationData.COLUMN_NAME_PREVIOUS_OFFSET, mPersistedConfiguration.offsetCompensation);
+        values.put(CalibrationData.COLUMN_NAME_NEAR, mCalibratedConfiguration.nearThreshold);
+        values.put(CalibrationData.COLUMN_NAME_FAR, mCalibratedConfiguration.farThreshold);
+        values.put(CalibrationData.COLUMN_NAME_OFFSET, mCalibratedConfiguration.offsetCompensation);
 
         PackageInfo pInfo = null;
         try {
@@ -541,17 +348,6 @@ public class CalibrationActivity extends Activity {
 
     }
 
-    private static String exec(String cmd) {
-        try {
-            Process proc = Runtime.getRuntime().exec(new String[]{cmd});
-            BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-            return reader.readLine();
-        } catch (IOException e) {
-            Log.wtf(TAG, "Could not execute command `" + cmd + "`", e);
-            return null;
-        }
-    }
-
     protected static void setSuccessfullyCalibrated(Context ctx, boolean isSuccessfullyCalibrated) {
         SharedPreferences sharedPref = ctx.getSharedPreferences(
                 ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
@@ -564,19 +360,10 @@ public class CalibrationActivity extends Activity {
         SharedPreferences sharedPref = ctx.getSharedPreferences(
                 ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
         boolean wasCalibrated = sharedPref.getBoolean(ctx.getString(R.string.preference_successfully_calibrated), false);
-        boolean wasCalibratedEarlier = false;
-        try {
-            RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "rw");
-            file.seek(NEAR_THRESHOLD_OFFSET);
-            file.seek(OFFSET_COMPENSATION_OFFSET);
-            byte offset0 = file.readByte();
-            byte offset1 = file.readByte();
-            file.close();
-            /* offset is only 0 on devices that have not been calibrated. */
-            wasCalibratedEarlier = (offset0 != 0 || offset1 != 0);
-        } catch (Exception e) {
-            Log.wtf(TAG, e);
-        }
+        /* offset is only 0 on devices that have not been calibrated. */
+        ProximitySensorConfiguration persistedConfiguration = ProximitySensorConfiguration.readFromMemory();
+        boolean wasCalibratedEarlier = (persistedConfiguration != null) && (persistedConfiguration.offsetCompensation != 0);
+
         return !wasCalibrated;
     }
 
