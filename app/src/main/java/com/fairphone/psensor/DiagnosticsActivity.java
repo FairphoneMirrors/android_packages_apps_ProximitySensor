@@ -42,8 +42,8 @@ public class DiagnosticsActivity extends Activity {
         mBlockValueTextView = (TextView)findViewById(R.id.blockValue);
         mUnblockValueTextView = (TextView)findViewById(R.id.unblockValue);
 
-        mBlockValueTextView.setText(String.valueOf(CalibrationActivity.BLOCK_LIMIT - CalibrationActivity.OFFSET_NEAR));
-        mUnblockValueTextView.setText(String.valueOf(CalibrationActivity.UNBLOCK_LIMIT - CalibrationActivity.OFFSET_FAR));
+        mBlockValueTextView.setText(String.valueOf(CalibrationActivity.BLOCK_LIMIT - CalibrationActivity.NEAR_THRESHOLD_FROM_BLOCKED_VALUE));
+        mUnblockValueTextView.setText(String.valueOf(CalibrationActivity.UNBLOCK_LIMIT - CalibrationActivity.FAR_THRESHOLD_FROM_NEAR_THRESHOLD));
 
         getProximitySensor();
         setupSensorStateListener();
