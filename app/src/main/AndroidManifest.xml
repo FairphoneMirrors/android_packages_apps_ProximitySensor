@@ -7,8 +7,8 @@
     android:versionName="1.0">
 
     <uses-sdk
-        android:minSdkVersion="17"
-        android:targetSdkVersion="21" />
+        android:minSdkVersion="22"
+        android:targetSdkVersion="22" />
 
      <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
      <uses-permission android:name="android.permission.READ_PHONE_STATE" />
