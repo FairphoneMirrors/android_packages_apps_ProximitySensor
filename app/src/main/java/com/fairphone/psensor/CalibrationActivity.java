@@ -41,7 +41,7 @@ public class CalibrationActivity extends Activity {
     private static final String CALIBRATION_FILE = "/persist/sns.reg";
     private static final String CMD = "senread";
     private static final String RESULT_PREFIX = "[RESULT]";
-    private static final int DEFAULT_OFFSET = 0x0001;
+    private static final int DEFAULT_OFFSET = 0x01;
     protected static final int OFFSET_FAR = 30;
     protected static final int OFFSET_NEAR = 30;
     protected static final int READ_MIN_LIMIT = 0;
@@ -50,7 +50,7 @@ public class CalibrationActivity extends Activity {
     protected static final int UNBLOCK_LIMIT = 180;
     private static final int SEEK_NEAR = 0x00000100 + 4;
     private static final int SEEK_FAR = 0x00000100 + 6;
-    private static final int SEEK_OFFSET = 0x00000020 + 8;
+    private static final int SEEK_OFFSET = 0x00000128;
 
     private static final int STATE_START = 0;
     private static final int STATE_BLOCK = 11;
@@ -401,6 +401,8 @@ public class CalibrationActivity extends Activity {
 
     private void getPersistedValues() {
         byte[] buffer = new byte[4];
+        buffer[2] = 0x00;
+        buffer[3] = 0x00;
         try {
             RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "r");
 
@@ -415,9 +417,10 @@ public class CalibrationActivity extends Activity {
             Log.d(getString(R.string.logtag), "persisted far data    = " + String.format("%3d", mPersistedDataFar) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
 
             file.seek(SEEK_OFFSET);
-            file.read(buffer, 0, 2);
+            file.read(buffer, 0, 1);
+            buffer[1] = 0x00;
             mPersistedDataOffset = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
-            Log.d(getString(R.string.logtag), "persisted offset data = " + String.format("%3d", mPersistedDataOffset) + " (" + String.format("0x%02x%02x", buffer[1], buffer[0]) + ")");
+            Log.d(getString(R.string.logtag), "persisted offset data = " + String.format("%3d", mPersistedDataOffset) + " (" + String.format("0x%02x", buffer[0]) + ")");
 
             file.close();
         } catch (Exception e) {
@@ -433,7 +436,7 @@ public class CalibrationActivity extends Activity {
 
         Log.d(getString(R.string.logtag), "near data   = " + String.format("%3d", mDataNear) + " (" + String.format("0x%02x%02x", near[1], near[0]) + ")");
         Log.d(getString(R.string.logtag), "far data    = " + String.format("%3d", mDataFar) + " (" + String.format("0x%02x%02x", far[1], far[0]) + ")");
-        Log.d(getString(R.string.logtag), "offset data = " + String.format("%3d", mDataOffset) + " (" + String.format("0x%02x%02x", offset[1], offset[0]) + ")");
+        Log.d(getString(R.string.logtag), "offset data = " + String.format("%3d", mDataOffset) + " (" + String.format("0x%02x", offset[0]) + ")");
 
         try {
             RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "rw");
@@ -445,7 +448,6 @@ public class CalibrationActivity extends Activity {
             file.writeByte(far[1]);
             file.seek(SEEK_OFFSET);
             file.writeByte(offset[0]);
-            file.writeByte(offset[1]);
             file.close();
             storeCalibrationData();
             return true;
