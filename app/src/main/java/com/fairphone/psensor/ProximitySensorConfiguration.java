@@ -18,6 +18,43 @@ public class ProximitySensorConfiguration {
     private static final String TAG = ProximitySensorConfiguration.class.getSimpleName();
 
     /**
+     * Minimal offset compensation value allowed to be persisted. <br>
+     * The minimal value accepted in the registry is <code>0x0000</code>, whereas this is the minimal value considered
+     * sane from a tuning perspective.
+     */
+    public static final int MIN_OFFSET_COMPENSATION = 0x0000;
+    /**
+     * Maximal offset compensation value allowed to be persisted. <br>
+     * The maximal value accepted in the registry is <code>0xFFFF</code>, whereas this is the maximal value considered
+     * sane from a tuning perspective.
+     */
+    public static final int MAX_OFFSET_COMPENSATION = 0x00FF;
+    /**
+     * Minimal near threshold value allowed to be persisted. <br>
+     * The minimal value accepted in the registry is <code>0x0000</code>, whereas this is the minimal value considered
+     * sane from a tuning perspective.
+     */
+    public static final int MIN_NEAR_THRESHOLD = 0x0000;
+    /**
+     * Maximal near threshold value allowed to be persisted. <br>
+     * The maximal value accepted in the registry is <code>0xFFFF</code>, whereas this is the maximal value considered
+     * sane from a tuning perspective.
+     */
+    public static final int MAX_NEAR_THRESHOLD = 0x00FF;
+    /**
+     * Minimal far threshold value allowed to be persisted. <br>
+     * The minimal value accepted in the registry is <code>0x0000</code>, whereas this is the minimal value considered
+     * sane from a tuning perspective.
+     */
+    public static final int MIN_FAR_THRESHOLD = 0x0000;
+    /**
+     * Maximal far threshold value allowed to be persisted. <br>
+     * The maximal value accepted in the registry is <code>0xFFFF</code>, whereas this is the maximal value considered
+     * sane from a tuning perspective.
+     */
+    public static final int MAX_FAR_THRESHOLD = 0x00FF;
+
+    /**
      * Default value for the offset compensation.
      */
     private static final int DEFAULT_OFFSET_COMPENSATION = 0x0001;
@@ -119,12 +156,23 @@ public class ProximitySensorConfiguration {
      * This method <strong>does not</strong> update the current configuration of the proximity sensor. It does set the
      * values that live in the <code>/persist/</code> directory only.
      *
+     * @throws IllegalArgumentException if one of the configuration element does not respect the acceptable range
+     * (see {@link #MIN_OFFSET_COMPENSATION}, {@link #MAX_OFFSET_COMPENSATION}, {@link #MIN_NEAR_THRESHOLD},
+     * {@link #MAX_NEAR_THRESHOLD}, {@link #MIN_FAR_THRESHOLD}, and {@link #MAX_FAR_THRESHOLD}).
      * @return <code>true</code> if the configuration could be persisted, <code>false</code> if it failed.
      */
-    public boolean persistToMemory() {
+    public boolean persistToMemory() throws IllegalArgumentException {
         boolean success = false;
         byte[] buffer;
         RandomAccessFile file = null;
+
+        if (offsetCompensation < MIN_OFFSET_COMPENSATION || MAX_OFFSET_COMPENSATION < offsetCompensation) {
+            throw new IllegalArgumentException(String.format(Locale.ENGLISH, "Offset compensation (%d) not in the acceptable range [%d;%d]", offsetCompensation, MIN_OFFSET_COMPENSATION, MAX_OFFSET_COMPENSATION));
+        } else if (nearThreshold < MIN_NEAR_THRESHOLD || MAX_NEAR_THRESHOLD < nearThreshold) {
+            throw new IllegalArgumentException(String.format(Locale.ENGLISH, "Near threshold (%d) not in the acceptable range [%d;%d]", nearThreshold, MIN_NEAR_THRESHOLD, MAX_NEAR_THRESHOLD));
+        }if (farThreshold < MIN_FAR_THRESHOLD || MAX_FAR_THRESHOLD < farThreshold) {
+            throw new IllegalArgumentException(String.format(Locale.ENGLISH, "Far threshold (%d) not in the acceptable range [%d;%d]", farThreshold, MIN_FAR_THRESHOLD, MAX_FAR_THRESHOLD));
+        }
 
         try {
             file = new RandomAccessFile(CALIBRATION_FILE, "rw");
