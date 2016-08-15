@@ -20,7 +20,7 @@ public class ProximitySensorConfiguration {
     /**
      * Default value for the offset compensation.
      */
-    private static final int DEFAULT_OFFSET_COMPENSATION = 0x01;
+    private static final int DEFAULT_OFFSET_COMPENSATION = 0x0001;
     /**
      * Default value for the near threshold.
      */
@@ -90,8 +90,7 @@ public class ProximitySensorConfiguration {
             RandomAccessFile file = new RandomAccessFile(CALIBRATION_FILE, "r");
 
             file.seek(OFFSET_COMPENSATION_OFFSET);
-            file.read(buffer, 0, 1);
-            buffer[1] = 0x00;
+            file.read(buffer, 0, 2);
             configuration.offsetCompensation = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
 
             file.seek(NEAR_THRESHOLD_OFFSET);
@@ -132,7 +131,7 @@ public class ProximitySensorConfiguration {
 
             file.seek(OFFSET_COMPENSATION_OFFSET);
             buffer = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(offsetCompensation).array();
-            file.write(buffer, 0, 1);
+            file.write(buffer, 0, 2);
 
             file.seek(NEAR_THRESHOLD_OFFSET);
             buffer = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(nearThreshold).array();
