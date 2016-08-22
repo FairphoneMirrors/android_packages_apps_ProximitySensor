@@ -6,9 +6,9 @@
     <string name="activity_diagnostics">Diagnostics</string>
     <string name="activity_calibration">Calibration</string>
 
-    <string name="msg_block">Cover the sensor area completely with your finger (the sensor area is shown in the image above), then press the OK button.</string>
+    <string name="msg_block">Cover the sensor area completely with your finger (the sensor area is shown in the image above), then press the Next button.</string>
     <string name="msg_reading">Checking…</string>
-    <string name="msg_unblock">Remove your finger from the sensor area and press the OK button.</string>
+    <string name="msg_unblock">Remove your finger from the sensor area and press the Next button.</string>
     <string name="msg_cal">Calibrating…</string>
     <string name="msg_calibration_success"><![CDATA[Calibration successful! Press the OK & Reboot button to finalize the calibration process and to reboot your Fairphone.]]></string>
     <string name="msg_step_success">Successful</string>
