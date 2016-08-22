@@ -122,10 +122,10 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
         mFlipper.addView(mViewStep3);
 
 
-        mStep1 = (TextView) mViewStep1.findViewById(R.id.textview_heading);
-        mText1 = (TextView) mViewStep1.findViewById(R.id.maintext);
+        mStep1 = (TextView) mViewStep1.findViewById(R.id.current_step);
+        mText1 = (TextView) mViewStep1.findViewById(R.id.instructions);
         mButton1 = (Button) mViewStep1.findViewById(R.id.button);
-        mProgressBar1 = (ProgressBar) mViewStep1.findViewById(R.id.progressBar);
+        mProgressBar1 = (ProgressBar) mViewStep1.findViewById(R.id.progress_bar);
         mProgressBar1.setVisibility(View.INVISIBLE);
 
         mButton1.setOnClickListener(new View.OnClickListener() {
@@ -135,12 +135,12 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
             }
         });
 
-        mStep2 = (TextView) mViewStep2.findViewById(R.id.textview_heading);
-        mText2 = (TextView) mViewStep2.findViewById(R.id.maintext);
+        mStep2 = (TextView) mViewStep2.findViewById(R.id.current_step);
+        mText2 = (TextView) mViewStep2.findViewById(R.id.instructions);
         mButton2 = (Button) mViewStep2.findViewById(R.id.button);
         mStep2.setText(getText(R.string.step_2));
         mText2.setText(getText(R.string.msg_unblock));
-        mProgressBar2 = (ProgressBar) mViewStep2.findViewById(R.id.progressBar);
+        mProgressBar2 = (ProgressBar) mViewStep2.findViewById(R.id.progress_bar);
         mProgressBar2.setVisibility(View.INVISIBLE);
 
         mButton2.setOnClickListener(new View.OnClickListener() {
@@ -149,8 +149,8 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
                 changeState(STATE_UNBLOCK_READ);
             }
         });
-        mStep3 = (TextView) mViewStep3.findViewById(R.id.textview_heading);
-        mText3 = (TextView) mViewStep3.findViewById(R.id.maintext);
+        mStep3 = (TextView) mViewStep3.findViewById(R.id.current_step);
+        mText3 = (TextView) mViewStep3.findViewById(R.id.instructions);
         mButton3 = (Button) mViewStep3.findViewById(R.id.button);
         mStep3.setText(getText(R.string.step_3));
         mText3.setText(getText(R.string.msg_calibration_success));

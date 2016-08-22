@@ -22,7 +22,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.Activity;
@@ -65,7 +64,7 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
 
         }
 
-        mTextViewMain = (TextView) findViewById(R.id.maintext);
+        mTextViewMain = (TextView) findViewById(R.id.instructions);
         mTextViewMain.setText(Html.fromHtml(getString(R.string.Text)));
 
         setAlreadyShown();

@@ -107,7 +107,7 @@ public class UpdateFinalizerService extends IntentService {
                 .bigText(getString(R.string.NotificationText)));
         notBuilder.setSmallIcon(R.drawable.ic_stat_action_info);
         notBuilder.setContentIntent(pendingIntent);
-        notBuilder.setColor(getResources().getColor(R.color.colorPrimary));
+        notBuilder.setColor(getResources().getColor(R.color.theme_primary));
         NotificationManager notificationManager =  (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(mNotificationIDPleaseCalibrate, notBuilder.build());
     }

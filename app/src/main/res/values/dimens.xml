@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- ActionBar contentInsetStart -->
-    <dimen name="actionbar_contentInsetStart">16dp</dimen>
 
-    <!-- ActionBar height -->
-    <dimen name="actionbar_size">56dip</dimen>
+    <!-- HEADER -->
+    <dimen name="header_big_height">100dp</dimen>
+    <dimen name="header_small_height">56dp</dimen>
+    <dimen name="header_big_text_size">34sp</dimen>
+    <dimen name="header_small_text_size">20sp</dimen>
+
+    <!-- MAIN -->
+    <dimen name="main_margin">32dp</dimen>
+    <dimen name="main_margin_small">20dp</dimen>
+    <dimen name="main_padding">32dp</dimen>
+    <dimen name="main_padding_small">20dp</dimen>
+    <dimen name="main_small_text_margin_top">43dp</dimen>
+    <dimen name="main_small_text_below_heading_margin_top">20dp</dimen>
+    <dimen name="main_button_margin_top">8dp</dimen>
 </resources>

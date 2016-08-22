@@ -1,74 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorFP2Background">
-
-    <TextView
-        android:id="@+id/maintext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="sans-serif-light"
-        android:lineSpacingExtra="3sp"
-        android:text="@string/msg_block"
-        android:textColor="@color/colorFP2Text"
-        android:textSize="15sp"
-        android:layout_marginEnd="30dp"
-
-        android:layout_below="@+id/textview_heading"
-        android:layout_alignStart="@+id/textview_heading"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:id="@+id/textview_heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/step_1"
-        android:textAllCaps="false"
-        android:textColor="@color/colorFP2Text"
-        android:textIsSelectable="false"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:typeface="sans"
-        android:layout_below="@+id/instructionImage"
-        android:layout_marginEnd="30dp"
-        android:layout_marginStart="30dp"
-        />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/fairphone_button"
-        android:fontFamily="sans-serif-light"
-        android:text="@string/next"
-        android:textColor="@color/colorFP2ButtonText"
-        android:textSize="24sp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp" />
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/background"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/main_padding"
+    android:paddingRight="@dimen/main_padding">
 
     <ImageView
-        android:id="@+id/instructionImage"
-        android:src="@drawable/top_image_psensor"
+        android:id="@+id/instruction_image"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/top_image_psensor" />
+
+    <TextView
+        android:id="@+id/current_step"
+        style="@style/TextBold16BlueDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/instruction_image"
+        android:text="@string/step_1"
+        android:textIsSelectable="false" />
+
+    <TextView
+        android:id="@+id/instructions"
+        style="@style/TextRegular14BlueDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/current_step"
+        android:layout_marginTop="@dimen/main_small_text_below_heading_margin_top"
+        android:text="@string/msg_block" />
 
     <ProgressBar
+        android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_marginBottom="57dp"
-        android:visibility="invisible"
         android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/main_margin"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/button"
+        style="@style/ButtonWhiteBlue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/main_margin"
+        android:text="@string/next" />
 </RelativeLayout>
