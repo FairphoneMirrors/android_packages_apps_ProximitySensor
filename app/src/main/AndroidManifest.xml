@@ -21,7 +21,8 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:icon="@mipmap/ic_launcher_settings">
 
         <activity android:name="com.fairphone.psensor.UpdateFinalizerActivity"
             android:enabled="false"
