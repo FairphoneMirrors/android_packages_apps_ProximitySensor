@@ -12,7 +12,7 @@
     <string name="block_value">Valeur à l\'état «bloqué» :</string>
     <string name="dontshowagain">Ne plus afficher cet écran.</string>
     <string name="greating">Calibration du capteur de proximité</string>
-    <string name="msg_block">Recouvrez la zone du capteur entièrement avec votre doigt (la zone à couvrir est illustrée par l\'image ci-dessus), puis utilisez le bouton OK.</string>
+    <string name="msg_block">Recouvrez la zone du capteur entièrement avec votre doigt (la zone à couvrir est illustrée par l\'image ci-dessus), puis utilisez le bouton Suivant.</string>
     <string name="msg_cal">Calibration en cours…</string>
     <string name="msg_calibration_success"><![CDATA[Calibration terminée ! Utilisez le bouton OK & Redémarrer pour finaliser la procédure et redémarrer votre Fairphone.]]></string>
     <string name="msg_fail">Échec</string>
@@ -22,7 +22,7 @@
     <string name="msg_fail_write_sns">Erreur exceptionnelle de permission…</string>
     <string name="msg_reading">Lecture en cours…</string>
     <string name="msg_step_success">Succès</string>
-    <string name="msg_unblock">Enlevez votre doigt de la zone du capteur puis utilisez le bouton OK.</string>
+    <string name="msg_unblock">Enlevez votre doigt de la zone du capteur puis utilisez le bouton Suivant.</string>
     <string name="name_exit">Quitter</string>
     <string name="name_read">OK</string>
     <string name="next">Suivant</string>

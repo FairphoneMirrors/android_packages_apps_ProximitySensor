@@ -12,7 +12,7 @@
     <string name="cancel">Annuleer</string>
     <string name="dontshowagain">Dit scherm niet meer tonen.</string>
     <string name="greating">Afstandssensor kalibratie</string>
-    <string name="msg_block">Bedek de sensor volledig met je vinger (het sensor gebied is weergegeven in de afbeelding hierboven) en druk vervolgens op de OK knop.</string>
+    <string name="msg_block">Bedek de sensor volledig met je vinger (het sensor gebied is weergegeven in de afbeelding hierboven) en druk vervolgens op de Volgende knop.</string>
     <string name="msg_cal">Kalibreren…</string>
     <string name="msg_calibration_success"><![CDATA[Kalibratie succesvol! Druk op de OK & Herstart knop om de kalibratie af te ronden en je Fairphone te herstarten.]]></string>
     <string name="Text"><![CDATA[ <p>Fairphone OS geeft je nu de mogelijkheid om de afstandssensor te kalibreren - dit verbetert het gedrag van de sensor tijdens een telefoongesprek (scherm uit/aan).</p> <p>We raden je aan de afstandssensor te kaliberen - dit is eenvoudig en zo gepiept!</p>]]></string>
@@ -23,7 +23,7 @@
     <string name="msg_fail_write_sns">Er is onverwacht een permissie probleem opgetreden…</string>
     <string name="msg_reading">Controleren…</string>
     <string name="msg_step_success">Succesvol</string>
-    <string name="msg_unblock">Verwijder je vinger van de sensor en druk op de OK knop.</string>
+    <string name="msg_unblock">Verwijder je vinger van de sensor en druk op de Volgende knop.</string>
     <string name="name_exit">Sluit</string>
     <string name="name_read">OK</string>
     <string name="next">Volgende</string>
