@@ -28,11 +28,29 @@ import com.fairphone.psensor.helper.ProximitySensorHelper;
 import java.util.Locale;
 
 /**
- * 1. Hint user block sensor and read value. if less than 230, hint and wait confirm. <BR>
- * 2. Hint user unblock sensor and read value. if greater than 96, hint and wait confirm. <BR>
- * 3. Use the value of unblock to do the calibration. value+30 as far, value+60 as near. <BR>
- * 4. Write far and near value to /persist/sns.reg binary file. <BR>
- * 5. The file of sns.reg content as "0000100: 0a3c 0000 <near> <far> 6400 6400 01c0 0000" <BR>
+ * Activity to start the calibration process.<br>
+ * <br>
+ * The calibration steps are:
+ * <ol>
+ * <li>Ask for a blocked sensor and read the (blocked) value.</li>
+ * <li>Ask for a non-blocked sensor and read the (non-blocked) value.</li>
+ * <li>Compute a new calibration (near and far threshold as well as the offset compensation) and persist it into the
+ * memory.</li>
+ * </ol>
+ * <br>
+ * The dynamic offset compensation is computed from the non-blocked value read at step 2.<br>
+ * The rules are as follow:
+ * <ol>
+ * <li>The read value is reduced by approx. 32 (sensor units) for each offset compensation increment (from the
+ * specification).</li>
+ * <li>According to the vendor, the value read must be above 0 when non-blocked, so we use the offset value directly
+ * lower than floor("value read"/32) to be on the safe side.</li>
+ * <li>This also allows to take into account a dirty current state. The non-blocked value then belongs to [32;63] in
+ * the current conditions.</li>
+ * <li>If the value read is already 0, we lower the persisted offset by 2 to reach a similar non-blocked range than
+ * above.</li>
+ * <li>The proximity sensor offset compensation belongs to [{@link ProximitySensorConfiguration#MIN_OFFSET_COMPENSATION}, {@link ProximitySensorConfiguration#MAX_OFFSET_COMPENSATION}].</li>
+ * </ol>
  */
 public class CalibrationActivity extends Activity implements IncompatibleDeviceDialog.IncompatibleDeviceDialogListener {
     private static final String TAG = CalibrationActivity.class.getSimpleName();
@@ -69,6 +87,9 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
 
     private ProximitySensorConfiguration mPersistedConfiguration;
     private ProximitySensorConfiguration mCalibratedConfiguration;
+
+    private int mBlockedValue;
+    private int mNonBlockedValue;
 
     private int mState = STATE_START;
     private Handler mHandler;
@@ -232,7 +253,7 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
                         Log.d(TAG, "    blocked value = " + String.format(Locale.ENGLISH, "%3d", value));
 
                         if (value >= BLOCK_LIMIT) {
-                            mCalibratedConfiguration.nearThreshold = value - NEAR_THRESHOLD_FROM_BLOCKED_VALUE;
+                            mBlockedValue = value;
                             changeState(STATE_UNBLOCK);
                         } else {
                             mText1.setText(getString(R.string.msg_fail_block));
@@ -252,6 +273,18 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                mCalibratedConfiguration.nearThreshold = mBlockedValue - NEAR_THRESHOLD_FROM_BLOCKED_VALUE;
+                mCalibratedConfiguration.farThreshold = mCalibratedConfiguration.nearThreshold - FAR_THRESHOLD_FROM_NEAR_THRESHOLD;
+
+                if (mNonBlockedValue == 0) {
+                    // TODO ignore if there was a calibration but no reboot as the persisted data will not be read until next reboot
+                    mCalibratedConfiguration.offsetCompensation = Math.min(Math.max(mPersistedConfiguration.offsetCompensation - 2, ProximitySensorConfiguration.MIN_OFFSET_COMPENSATION), ProximitySensorConfiguration.MAX_OFFSET_COMPENSATION);
+                    Log.d(TAG, "New offset based on current offset only");
+                } else {
+                    mCalibratedConfiguration.offsetCompensation = Math.min(Math.max(mPersistedConfiguration.offsetCompensation + (int)Math.floor(mNonBlockedValue / 32) - 1, ProximitySensorConfiguration.MIN_OFFSET_COMPENSATION), ProximitySensorConfiguration.MAX_OFFSET_COMPENSATION);
+                    Log.d(TAG, "New offset based on unblock value and current offset");
+                }
+
                 if (mCalibratedConfiguration.persistToMemory()) {
                     storeCalibrationData();
                     mText3.setText(getString(R.string.msg_calibration_success));
@@ -297,8 +330,8 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
                     public void run() {
                         Log.d(TAG, "non-blocked value = " + String.format(Locale.ENGLISH, "%3d", value));
 
-                        if (value >= 0 && value <= (mCalibratedConfiguration.nearThreshold + NEAR_THRESHOLD_FROM_BLOCKED_VALUE - 5)) {
-                            mCalibratedConfiguration.farThreshold = mCalibratedConfiguration.nearThreshold - FAR_THRESHOLD_FROM_NEAR_THRESHOLD;
+                        if (value >= 0 && value <= (mBlockedValue - 5)) {
+                            mNonBlockedValue = value;
                             changeState(STATE_CAL);
                         } else {
                             mText1.setText(getString(R.string.msg_fail_unlock));
