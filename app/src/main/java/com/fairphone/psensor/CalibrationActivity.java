@@ -38,6 +38,9 @@ import java.util.Locale;
  * memory.</li>
  * </ol>
  * <br>
+ * The offset compensation is -was- 0 out of factory and could cause issues because certain devices require a higher
+ * compensation.<br>
+ * <br>
  * The dynamic offset compensation is computed from the non-blocked value read at step 2.<br>
  * The rules are as follow:
  * <ol>
@@ -398,18 +401,32 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
         editor.apply();
     }
 
-    protected static boolean hasToBeCalibrated(Context ctx) {
-        SharedPreferences sharedPref = ctx.getSharedPreferences(
-                ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
-        boolean hasToBeCalibrated = !sharedPref.getBoolean(ctx.getString(R.string.preference_successfully_calibrated), false);
+    /**
+     * Determine if the current device needs to be calibrated.<br>
+     * <br>
+     * The conditions are as follows:
+     * <ol>
+     * <li>The memory needs to be accessible (R/W).</li>
+     * <li>There must not be an evidence that the device has been calibrated in the shared preferences.</li>
+     * <li>Optional: the persisted offset compensation must be equal to 0.</li>
+     * </ol>
+     *
+     * @param ctx The context.
+     * @param calibrateNullCompensation Flag to check for a null compensation (leading to a calibration).
+     * @return <em>true</em> if a calibration should take place, <em>false</em> if the device has been calibrated at
+     * one point.
+     */
+    protected static boolean hasToBeCalibrated(Context ctx, boolean calibrateNullCompensation) {
+        boolean hasToBeCalibrated;
 
         if (ProximitySensorConfiguration.canReadFromAndPersistToMemory()) {
-            /* offset is only 0 on devices that have not been calibrated. */
-            final ProximitySensorConfiguration persistedConfiguration = ProximitySensorConfiguration.readFromMemory();
+            final SharedPreferences sharedPref = ctx.getSharedPreferences(
+                ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
+            hasToBeCalibrated = !sharedPref.getBoolean(ctx.getString(R.string.preference_successfully_calibrated), false);
 
-            if ((persistedConfiguration != null) && (persistedConfiguration.offsetCompensation != 0)) {
-                // TODO un-comment following to make sure a persisted offset != 0 leads to a calibration
-                // hasToBeCalibrated = true;
+            if (!hasToBeCalibrated && calibrateNullCompensation) {
+                final ProximitySensorConfiguration persistedConfiguration = ProximitySensorConfiguration.readFromMemory();
+                hasToBeCalibrated = (persistedConfiguration != null) && (persistedConfiguration.offsetCompensation == 0);
             }
         } else {
             /* Memory is not accessible, so no calibration is required. */
@@ -417,6 +434,18 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
         }
 
         return hasToBeCalibrated;
+    }
+
+    /**
+     * Call to <code>hasToBeCalibrated(ctx, false)</code>.
+     *
+     * @param ctx The context.
+     * @return <em>true</em> if a calibration should take place, <em>false</em> if the device has been calibrated at
+     * one point.
+     * @see CalibrationActivity#hasToBeCalibrated(Context, boolean)
+     */
+    protected static boolean hasToBeCalibrated(Context ctx) {
+        return hasToBeCalibrated(ctx, false);
     }
 
     private void showIncompatibleDeviceDialog() {
