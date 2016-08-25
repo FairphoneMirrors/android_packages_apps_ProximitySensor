@@ -2,6 +2,7 @@ package com.fairphone.psensor;
 
 import android.util.Log;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -112,6 +113,26 @@ public class ProximitySensorConfiguration {
 
     public String toString() {
         return String.format(Locale.ENGLISH, "{offset compensation=%d, near threshold=%d, far threshold=%d}", offsetCompensation, nearThreshold, farThreshold);
+    }
+
+    /**
+     * Determine whether the memory can be read from and persisted by trying to open a handle to it.
+     *
+     * @return <code>true</code> if the memory is both readable and writable, <code>false</code> if not.
+     */
+    public static boolean canReadFromAndPersistToMemory() {
+        boolean canReadAndWrite = false;
+
+        try {
+            new RandomAccessFile(CALIBRATION_FILE, "rw").close();
+            canReadAndWrite = true;
+        } catch (FileNotFoundException e) {
+            // fall-through
+        } catch (IOException e) {
+            // fall-through
+        }
+
+        return canReadAndWrite;
     }
 
     /**

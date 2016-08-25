@@ -3,6 +3,7 @@ package com.fairphone.psensor.helper;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -24,7 +25,7 @@ public class ProximitySensorHelper {
     /**
      * Command to read the sensor value.
      */
-    private static final String READ_COMMAND = "senread";
+    private static final String READ_COMMAND = "/system/bin/senread";
     /**
      * Result prefix returned by the reading command.
      */
@@ -43,6 +44,19 @@ public class ProximitySensorHelper {
      * Empty constructor to avoid instantiation.
      */
     private ProximitySensorHelper() {
+    }
+
+    /**
+     * Determine whether the proximity sensor value is readable or not based on the reading tool availability. <br>
+     * <br>
+     * The reading tool is tested to exist and be executable.
+     *
+     * @return <code>true</code> if the proximity sensor value is readable, <code>false</code> if not.
+     */
+    public static boolean canReadProximitySensorValue() {
+        final File tool = new File(READ_COMMAND);
+
+        return tool.exists() && tool.canExecute();
     }
 
     /**

@@ -1,8 +1,11 @@
 package com.fairphone.psensor;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.fairphone.psensor.CalibrationContract.CalibrationData;
+import com.fairphone.psensor.fragments.IncompatibleDeviceDialog;
 import com.fairphone.psensor.helper.ProximitySensorHelper;
 
 import java.util.Locale;
@@ -30,7 +34,7 @@ import java.util.Locale;
  * 4. Write far and near value to /persist/sns.reg binary file. <BR>
  * 5. The file of sns.reg content as "0000100: 0a3c 0000 <near> <far> 6400 6400 01c0 0000" <BR>
  */
-public class CalibrationActivity extends Activity {
+public class CalibrationActivity extends Activity implements IncompatibleDeviceDialog.IncompatibleDeviceDialogListener {
     private static final String TAG = CalibrationActivity.class.getSimpleName();
 
     /* Activity states */
@@ -90,18 +94,23 @@ public class CalibrationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPersistedConfiguration = ProximitySensorConfiguration.readFromMemory();
-        mCalibratedConfiguration = new ProximitySensorConfiguration();
-
         mHandler = new Handler();
 
         setContentView(R.layout.activity_calibration);
+
+        if (!ProximitySensorHelper.canReadProximitySensorValue()) {
+            Log.w(TAG, "Proximity sensor value not read-able, aborting.");
+
+            showIncompatibleDeviceDialog();
+        } else {
+            mPersistedConfiguration = ProximitySensorConfiguration.readFromMemory();
+            mCalibratedConfiguration = new ProximitySensorConfiguration();
+        }
 
         mFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
         mFlipper.setInAnimation(this, R.anim.slide_in_from_left);
         mFlipper.setOutAnimation(this, R.anim.slide_out_to_right);
-
 
         LayoutInflater inflater = LayoutInflater.from(this);
         mViewStep1 = inflater.inflate(R.layout.view_calibration_step, null);
@@ -359,12 +368,44 @@ public class CalibrationActivity extends Activity {
     protected static boolean hasToBeCalibrated(Context ctx) {
         SharedPreferences sharedPref = ctx.getSharedPreferences(
                 ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
-        boolean wasCalibrated = sharedPref.getBoolean(ctx.getString(R.string.preference_successfully_calibrated), false);
-        /* offset is only 0 on devices that have not been calibrated. */
-        ProximitySensorConfiguration persistedConfiguration = ProximitySensorConfiguration.readFromMemory();
-        boolean wasCalibratedEarlier = (persistedConfiguration != null) && (persistedConfiguration.offsetCompensation != 0);
+        boolean hasToBeCalibrated = !sharedPref.getBoolean(ctx.getString(R.string.preference_successfully_calibrated), false);
 
-        return !wasCalibrated;
+        if (ProximitySensorConfiguration.canReadFromAndPersistToMemory()) {
+            /* offset is only 0 on devices that have not been calibrated. */
+            final ProximitySensorConfiguration persistedConfiguration = ProximitySensorConfiguration.readFromMemory();
+
+            if ((persistedConfiguration != null) && (persistedConfiguration.offsetCompensation != 0)) {
+                // TODO un-comment following to make sure a persisted offset != 0 leads to a calibration
+                // hasToBeCalibrated = true;
+            }
+        } else {
+            /* Memory is not accessible, so no calibration is required. */
+            hasToBeCalibrated = false;
+        }
+
+        return hasToBeCalibrated;
     }
 
+    private void showIncompatibleDeviceDialog() {
+        final DialogFragment dialog = new IncompatibleDeviceDialog();
+        dialog.show(getFragmentManager(), getString(R.string.fragment_tag_incompatible_device_dialog));
+    }
+
+    @Override
+    public void onIncompatibleDeviceDialogPositiveAction(DialogFragment dialog) {
+        final Intent intent = new Intent();
+        intent.setComponent(new ComponentName(getString(R.string.package_fairphone_updater), getString(R.string.activity_fairphone_updater_check_for_updates)));
+        intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onIncompatibleDeviceDialogNegativeAction(DialogFragment dialog) {
+        // fall-through
+    }
+
+    @Override
+    public void onDismissIncompatibleDeviceDialog(DialogFragment dialog) {
+        finish();
+    }
 }
