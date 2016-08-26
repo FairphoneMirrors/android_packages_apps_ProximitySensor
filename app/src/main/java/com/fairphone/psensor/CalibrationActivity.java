@@ -126,6 +126,10 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
             Log.w(TAG, "Proximity sensor value not read-able, aborting.");
 
             showIncompatibleDeviceDialog();
+        } else if (!ProximitySensorConfiguration.canReadFromAndPersistToMemory()) {
+            Log.w(TAG, "Proximity sensor configuration not accessible (R/W), aborting.");
+
+            showIncompatibleDeviceDialog();
         } else {
             mPersistedConfiguration = ProximitySensorConfiguration.readFromMemory();
             mCalibratedConfiguration = new ProximitySensorConfiguration();
