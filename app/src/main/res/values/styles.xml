@@ -61,6 +61,22 @@
         <item name="android:textColor">@color/green_dark</item>
     </style>
 
+    <style name="TextRegular14GreyLight" parent="@style/TextRegular14">
+        <item name="android:textColor">@color/grey_light</item>
+    </style>
+
+    <style name="TextRegular14GreyDark" parent="@style/TextRegular14">
+        <item name="android:textColor">@color/grey_dark</item>
+    </style>
+
+    <style name="TextRegular14PinkLight" parent="@style/TextRegular14">
+        <item name="android:textColor">@color/pink_light</item>
+    </style>
+
+    <style name="TextRegular14PinkDark" parent="@style/TextRegular14">
+        <item name="android:textColor">@color/pink_dark</item>
+    </style>
+
     <style name="TextRegular16BlueLight" parent="@style/TextRegular16">
         <item name="android:textColor">@color/blue_light</item>
     </style>
@@ -75,6 +91,22 @@
 
     <style name="TextRegular16GreenDark" parent="@style/TextRegular16">
         <item name="android:textColor">@color/green_dark</item>
+    </style>
+
+    <style name="TextRegular16GreyLight" parent="@style/TextRegular16">
+        <item name="android:textColor">@color/grey_light</item>
+    </style>
+
+    <style name="TextRegular16GreyDark" parent="@style/TextRegular16">
+        <item name="android:textColor">@color/grey_dark</item>
+    </style>
+
+    <style name="TextRegular16PinkLight" parent="@style/TextRegular16">
+        <item name="android:textColor">@color/pink_light</item>
+    </style>
+
+    <style name="TextRegular16PinkDark" parent="@style/TextRegular16">
+        <item name="android:textColor">@color/pink_dark</item>
     </style>
 
     <!-- TEXT LIGHT -->
@@ -112,8 +144,20 @@
         <item name="android:textColor">@color/green_dark</item>
     </style>
 
-    <style name="TextBold14Red" parent="@style/TextBold14">
-        <item name="android:textColor">@color/red</item>
+    <style name="TextBold14GreyLight" parent="@style/TextBold14">
+        <item name="android:textColor">@color/grey_light</item>
+    </style>
+
+    <style name="TextBold14GreyDark" parent="@style/TextBold14">
+        <item name="android:textColor">@color/grey_dark</item>
+    </style>
+
+    <style name="TextBold14PinkLight" parent="@style/TextBold14">
+        <item name="android:textColor">@color/pink_light</item>
+    </style>
+
+    <style name="TextBold14PinkDark" parent="@style/TextBold14">
+        <item name="android:textColor">@color/pink_dark</item>
     </style>
 
     <style name="TextBold16BlueLight" parent="@style/TextBold16">
@@ -130,6 +174,22 @@
 
     <style name="TextBold16GreenDark" parent="@style/TextBold16">
         <item name="android:textColor">@color/green_dark</item>
+    </style>
+
+    <style name="TextBold16GreyLight" parent="@style/TextBold16">
+        <item name="android:textColor">@color/grey_light</item>
+    </style>
+
+    <style name="TextBold16GreyDark" parent="@style/TextBold16">
+        <item name="android:textColor">@color/grey_dark</item>
+    </style>
+
+    <style name="TextBold16PinkLight" parent="@style/TextBold16">
+        <item name="android:textColor">@color/pink_light</item>
+    </style>
+
+    <style name="TextBold16PinkDark" parent="@style/TextBold16">
+        <item name="android:textColor">@color/pink_dark</item>
     </style>
 
     <!-- TITLE (HEADER) -->

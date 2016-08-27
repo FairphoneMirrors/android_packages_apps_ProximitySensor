@@ -50,13 +50,13 @@ public class IncompatibleDeviceDialog extends DialogFragment {
         builder.setTitle(R.string.incompatible_device);
         builder.setMessage(R.string.device_cannot_run_calibration_tool);
 
-        builder.setPositiveButton(R.string.dialog_go_to_updater, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.go_to_updater, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 mListener.onIncompatibleDeviceDialogPositiveAction(IncompatibleDeviceDialog.this);
             }
         });
 
-        builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 mListener.onIncompatibleDeviceDialogNegativeAction(IncompatibleDeviceDialog.this);
             }
