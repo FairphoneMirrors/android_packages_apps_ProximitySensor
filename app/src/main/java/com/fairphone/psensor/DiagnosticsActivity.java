@@ -11,7 +11,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.fairphone.psensor.helper.ProximitySensorHelper;
+import com.fairphone.psensor.helpers.ProximitySensorHelper;
 
 public class DiagnosticsActivity extends Activity {
 

@@ -34,6 +34,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.fairphone.psensor.helpers.CalibrationStatusHelper;
+
 
 public class UpdateFinalizerActivity extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
@@ -71,7 +73,7 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
 
         UpdateFinalizerService.startActionClearNotification(this);
 
-        if (isWizard() && !CalibrationActivity.hasToBeCalibrated(this)) {
+        if (isWizard() && !CalibrationStatusHelper.hasToBeCalibrated(this)) {
             disable(this);
             finish();
         }

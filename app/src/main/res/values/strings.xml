@@ -56,6 +56,9 @@
     <!-- FRAGMENT TAGS -->
     <string name="fragment_tag_incompatible_device_dialog" translatable="false">incompatible_device</string>
 
+    <!-- SHARED PREFERENCES -->
+    <string name="preference_pending_calibration" translatable="false">preference_pending_calibration</string>
+
     <!-- EXTERNAL PACKAGES AND ACTIVITIES -->
     <string name="package_fairphone_updater" translatable="false">com.fairphone.updater</string>
     <string name="activity_fairphone_updater_check_for_updates" translatable="false">com.fairphone.updater.FairphoneUpdater</string>

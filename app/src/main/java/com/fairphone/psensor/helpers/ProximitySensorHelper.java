@@ -1,4 +1,4 @@
-package com.fairphone.psensor.helper;
+package com.fairphone.psensor.helpers;
 
 import android.util.Log;
 
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * ProximitySensorHelper contains helper methods to access the proximity sensor.
+ * Helper methods to access the proximity sensor.
  */
 public class ProximitySensorHelper {
     private static final String TAG = ProximitySensorHelper.class.getSimpleName();

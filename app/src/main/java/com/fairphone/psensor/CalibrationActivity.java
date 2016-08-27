@@ -22,7 +22,8 @@ import android.widget.ViewFlipper;
 
 import com.fairphone.psensor.CalibrationContract.CalibrationData;
 import com.fairphone.psensor.fragments.IncompatibleDeviceDialog;
-import com.fairphone.psensor.helper.ProximitySensorHelper;
+import com.fairphone.psensor.helpers.CalibrationStatusHelper;
+import com.fairphone.psensor.helpers.ProximitySensorHelper;
 
 import java.util.Locale;
 
@@ -97,6 +98,15 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
     private View mViewStep2;
     private View mViewStep3;
 
+    private final View.OnClickListener actionReboot = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            powerManager.reboot(null);
+        }
+
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +128,20 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (CalibrationStatusHelper.isCalibrationPending(this)) {
+            updateCalibrationStepView(mViewStep3, STEP_CURRENT, R.string.step_3, R.string.msg_calibration_success, -1, actionReboot, R.string.reboot);
+            if (mFlipper.getDisplayedChild() != 2) {
+                mFlipper.setDisplayedChild(2);
+            }
+        } else {
+            reset();
+        }
+    }
+
     private void init() {
         mFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         mFlipper.setInAnimation(this, R.anim.slide_in_from_left);
@@ -131,8 +155,6 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
         mFlipper.addView(mViewStep1);
         mFlipper.addView(mViewStep2);
         mFlipper.addView(mViewStep3);
-
-        reset();
     }
 
     private void reset() {
@@ -153,13 +175,7 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
             }
         }, R.string.next);
 
-        updateCalibrationStepView(mViewStep3, STEP_CURRENT, R.string.step_3, R.string.msg_cal, -1, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                powerManager.reboot(null);
-            }
-        }, R.string.reboot);
+        updateCalibrationStepView(mViewStep3, STEP_CURRENT, R.string.step_3, R.string.msg_cal, -1, actionReboot, R.string.reboot);
 
         mFlipper.setDisplayedChild(0);
     }
@@ -310,7 +326,6 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
         mCalibratedConfiguration.farThreshold = mCalibratedConfiguration.nearThreshold - FAR_THRESHOLD_FROM_NEAR_THRESHOLD;
 
         if (mNonBlockedValue == 0) {
-            // TODO ignore if there was a calibration but no reboot as the persisted data will not be read until next reboot
             mCalibratedConfiguration.offsetCompensation = Math.min(Math.max(mPersistedConfiguration.offsetCompensation - 2, ProximitySensorConfiguration.MIN_OFFSET_COMPENSATION), ProximitySensorConfiguration.MAX_OFFSET_COMPENSATION);
             Log.d(TAG, "New offset based on current offset only");
         } else {
@@ -320,7 +335,7 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
 
         if (mCalibratedConfiguration.persistToMemory()) {
             storeCalibrationData();
-            setSuccessfullyCalibrated(this, true);
+            CalibrationStatusHelper.setCalibrationSuccessful(this);
 
             // wait a bit because the calibration is otherwise too fast
             new Thread(new Runnable() {
@@ -391,61 +406,6 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
                 null,
                 values);
 
-    }
-
-    protected static void setSuccessfullyCalibrated(Context ctx, boolean isSuccessfullyCalibrated) {
-        SharedPreferences sharedPref = ctx.getSharedPreferences(
-                ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(ctx.getString(R.string.preference_successfully_calibrated), isSuccessfullyCalibrated);
-        editor.apply();
-    }
-
-    /**
-     * Determine if the current device needs to be calibrated.<br>
-     * <br>
-     * The conditions are as follows:
-     * <ol>
-     * <li>The memory needs to be accessible (R/W).</li>
-     * <li>There must not be an evidence that the device has been calibrated in the shared preferences.</li>
-     * <li>Optional: the persisted offset compensation must be equal to 0.</li>
-     * </ol>
-     *
-     * @param ctx The context.
-     * @param calibrateNullCompensation Flag to check for a null compensation (leading to a calibration).
-     * @return <em>true</em> if a calibration should take place, <em>false</em> if the device has been calibrated at
-     * one point.
-     */
-    protected static boolean hasToBeCalibrated(Context ctx, boolean calibrateNullCompensation) {
-        boolean hasToBeCalibrated;
-
-        if (ProximitySensorConfiguration.canReadFromAndPersistToMemory()) {
-            final SharedPreferences sharedPref = ctx.getSharedPreferences(
-                ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
-            hasToBeCalibrated = !sharedPref.getBoolean(ctx.getString(R.string.preference_successfully_calibrated), false);
-
-            if (!hasToBeCalibrated && calibrateNullCompensation) {
-                final ProximitySensorConfiguration persistedConfiguration = ProximitySensorConfiguration.readFromMemory();
-                hasToBeCalibrated = (persistedConfiguration != null) && (persistedConfiguration.offsetCompensation == 0);
-            }
-        } else {
-            /* Memory is not accessible, so no calibration is required. */
-            hasToBeCalibrated = false;
-        }
-
-        return hasToBeCalibrated;
-    }
-
-    /**
-     * Call to <code>hasToBeCalibrated(ctx, false)</code>.
-     *
-     * @param ctx The context.
-     * @return <em>true</em> if a calibration should take place, <em>false</em> if the device has been calibrated at
-     * one point.
-     * @see CalibrationActivity#hasToBeCalibrated(Context, boolean)
-     */
-    protected static boolean hasToBeCalibrated(Context ctx) {
-        return hasToBeCalibrated(ctx, false);
     }
 
     private void startFairphoneUpdaterActivity() {

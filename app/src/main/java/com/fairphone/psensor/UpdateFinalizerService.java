@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.fairphone.psensor.helpers.CalibrationStatusHelper;
+
 public class UpdateFinalizerService extends IntentService {
 
     private static final String ACTION_BOOTUP_COMPLETE   = "com.fairphone.updatefinalizer.action.BOOT_COMPLETED";
@@ -81,7 +83,7 @@ public class UpdateFinalizerService extends IntentService {
 
     private void handleCheckCalibrationPending() {
         final Context ctx = this;
-        if (!UpdateFinalizerActivityFromNotification.isNotShowAnymore(this) && CalibrationActivity.hasToBeCalibrated(this)) {
+        if (!UpdateFinalizerActivityFromNotification.isNotShowAnymore(this) && CalibrationStatusHelper.hasToBeCalibrated(this)) {
             showNotification();
             setAlarm();
         }
