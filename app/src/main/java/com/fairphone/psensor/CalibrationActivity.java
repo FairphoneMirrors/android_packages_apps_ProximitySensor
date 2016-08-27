@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -58,18 +57,11 @@ import java.util.Locale;
 public class CalibrationActivity extends Activity implements IncompatibleDeviceDialog.IncompatibleDeviceDialogListener {
     private static final String TAG = CalibrationActivity.class.getSimpleName();
 
-    /* Activity states */
-    private static final int STATE_START = 0;
-    private static final int STATE_BLOCK = 11;
-    private static final int STATE_BLOCK_READ = 12;
-    private static final int STATE_BLOCK_WARN = 13;
-    private static final int STATE_UNBLOCK = 21;
-    private static final int STATE_UNBLOCK_READ = 22;
-    private static final int STATE_UNBLOCK_WARN = 23;
-    private static final int STATE_CAL = 3;
-    private static final int STATE_SUCCESS = 4;
-    private static final int STATE_FAIL = 5;
-    private static final int STATE_FAIL_STEP_2 = 6;
+    /* Calibration step status */
+    private static final int STEP_CURRENT = 0;
+    private static final int STEP_IN_PROGRESS = 1;
+    private static final int STEP_ERROR = 2;
+    private static final int STEP_OK = 3;
 
     /**
      * Value to compute the near threshold from the blocked value (in sensor units).
@@ -82,11 +74,15 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
     /**
      * Minimal accepted value for the blocked value (in sensor units).
      */
-    public static final int BLOCK_LIMIT = 235;
+    public static final int BLOCKED_MINIMAL_VALUE = 235;
     /**
-     * Maximal accepted value for the non-blocked value (in sensor units).
+     * Maximal accepted value for the non-blocked value in relation to the read blocked value (in sensor units).
      */
-    public static final int UNBLOCK_LIMIT = 180;
+    public static final int NON_BLOCKED_MAXIMAL_VALUE_FROM_BLOCKED_VALUE = 5;
+    /**
+     * Delay to emulate a long calibration (in ms).
+     */
+    public static final int CALIBRATION_DELAY_MS = 3000;
 
     private ProximitySensorConfiguration mPersistedConfiguration;
     private ProximitySensorConfiguration mCalibratedConfiguration;
@@ -94,25 +90,12 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
     private int mBlockedValue;
     private int mNonBlockedValue;
 
-    private int mState = STATE_START;
     private Handler mHandler;
 
     private ViewFlipper mFlipper;
     private View mViewStep1;
     private View mViewStep2;
     private View mViewStep3;
-    private ProgressBar mProgressBar1;
-    private ProgressBar mProgressBar2;
-    private TextView mStep1;
-    private TextView mText1;
-    private Button mButton1;
-    private TextView mStep2;
-    private TextView mText2;
-    private Button mButton2;
-    private TextView mStep3;
-    private TextView mText3;
-    private Button mButton3;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,237 +114,250 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
 
             showIncompatibleDeviceDialog();
         } else {
-            mPersistedConfiguration = ProximitySensorConfiguration.readFromMemory();
-            mCalibratedConfiguration = new ProximitySensorConfiguration();
+            init();
         }
+    }
 
+    private void init() {
         mFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
-
         mFlipper.setInAnimation(this, R.anim.slide_in_from_left);
         mFlipper.setOutAnimation(this, R.anim.slide_out_to_right);
 
-        LayoutInflater inflater = LayoutInflater.from(this);
-        mViewStep1 = inflater.inflate(R.layout.view_calibration_step, null);
-        mViewStep2 = inflater.inflate(R.layout.view_calibration_step, null);
-        mViewStep3 = inflater.inflate(R.layout.view_calibration_step, null);
+        final LayoutInflater inflater = LayoutInflater.from(this);
+        mViewStep1 = inflater.inflate(R.layout.view_calibration_step, mFlipper, false);
+        mViewStep2 = inflater.inflate(R.layout.view_calibration_step, mFlipper, false);
+        mViewStep3 = inflater.inflate(R.layout.view_calibration_step, mFlipper, false);
 
         mFlipper.addView(mViewStep1);
         mFlipper.addView(mViewStep2);
         mFlipper.addView(mViewStep3);
 
+        reset();
+    }
 
-        mStep1 = (TextView) mViewStep1.findViewById(R.id.current_step);
-        mText1 = (TextView) mViewStep1.findViewById(R.id.instructions);
-        mButton1 = (Button) mViewStep1.findViewById(R.id.button);
-        mProgressBar1 = (ProgressBar) mViewStep1.findViewById(R.id.progress_bar);
-        mProgressBar1.setVisibility(View.INVISIBLE);
+    private void reset() {
+        mPersistedConfiguration = ProximitySensorConfiguration.readFromMemory();
+        mCalibratedConfiguration = new ProximitySensorConfiguration();
 
-        mButton1.setOnClickListener(new View.OnClickListener() {
+        updateCalibrationStepView(mViewStep1, STEP_CURRENT, R.string.step_1, R.string.msg_block, -1, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeState(STATE_BLOCK_READ);
+                doReadBlockedValue();
             }
-        });
+        }, R.string.next);
 
-        mStep2 = (TextView) mViewStep2.findViewById(R.id.current_step);
-        mText2 = (TextView) mViewStep2.findViewById(R.id.instructions);
-        mButton2 = (Button) mViewStep2.findViewById(R.id.button);
-        mStep2.setText(getText(R.string.step_2));
-        mText2.setText(getText(R.string.msg_unblock));
-        mProgressBar2 = (ProgressBar) mViewStep2.findViewById(R.id.progress_bar);
-        mProgressBar2.setVisibility(View.INVISIBLE);
-
-        mButton2.setOnClickListener(new View.OnClickListener() {
+        updateCalibrationStepView(mViewStep2, STEP_CURRENT, R.string.step_2, R.string.msg_unblock, -1, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeState(STATE_UNBLOCK_READ);
+                doReadNonBlockedValue();
             }
-        });
-        mStep3 = (TextView) mViewStep3.findViewById(R.id.current_step);
-        mText3 = (TextView) mViewStep3.findViewById(R.id.instructions);
-        mButton3 = (Button) mViewStep3.findViewById(R.id.button);
-        mStep3.setText(getText(R.string.step_3));
-        mText3.setText(getText(R.string.msg_calibration_success));
-        mButton3.setText(R.string.reboot);
+        }, R.string.next);
 
-        mButton3.setOnClickListener(new View.OnClickListener() {
+        updateCalibrationStepView(mViewStep3, STEP_CURRENT, R.string.step_3, R.string.msg_cal, -1, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFlipper.showNext();
-                PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
                 powerManager.reboot(null);
             }
-        });
+        }, R.string.reboot);
+
+        mFlipper.setDisplayedChild(0);
     }
 
-    private void changeState(int state) {
-        mState = state;
-        update();
-    }
+    private void updateCalibrationStepView(View stepView, int viewStatus, int title, int instructions, int errorNotice, View.OnClickListener action, int actionLabel) {
+        final TextView viewTitle = (TextView) stepView.findViewById(R.id.current_step);
+        final TextView viewInstructions = (TextView) stepView.findViewById(R.id.instructions);
+        final TextView viewErrorNotice = (TextView) stepView.findViewById(R.id.error_notice);
+        final View viewInProgress = stepView.findViewById(R.id.progress_bar);
+        final Button buttonAction = (Button) stepView.findViewById(R.id.button);
 
-    private void update() {
-        switch (mState) {
-            case STATE_START:
-                changeState(STATE_BLOCK);
+        switch (viewStatus) {
+            case STEP_CURRENT:
+                viewErrorNotice.setVisibility(View.GONE);
+                viewInProgress.setVisibility(View.GONE);
+
+                buttonAction.setEnabled(true);
                 break;
-            case STATE_BLOCK:
-                updateToBlock();
+
+            case STEP_IN_PROGRESS:
+                viewErrorNotice.setVisibility(View.GONE);
+                viewInProgress.setVisibility(View.VISIBLE);
+
+                buttonAction.setEnabled(false);
                 break;
-            case STATE_BLOCK_READ:
-                updateToBlockRead();
+
+            case STEP_ERROR:
+                viewErrorNotice.setVisibility(View.VISIBLE);
+                viewInProgress.setVisibility(View.GONE);
+
+                buttonAction.setEnabled(true);
                 break;
-            case STATE_BLOCK_WARN:
-            case STATE_UNBLOCK:
-                updateToUnblock();
+
+            case STEP_OK:
+                viewErrorNotice.setVisibility(View.GONE);
+                viewInProgress.setVisibility(View.GONE);
+
+                buttonAction.setEnabled(false);
                 break;
-            case STATE_UNBLOCK_READ:
-                updateToUnblockRead();
-                break;
-            case STATE_UNBLOCK_WARN:
-            case STATE_CAL:
-                updateToCal();
-                break;
-            case STATE_SUCCESS:
-                updateToSuccess();
-                break;
-            case STATE_FAIL:
-                updateToFail();
-                break;
-            case STATE_FAIL_STEP_2:
-                updateToFailStep2();
-                break;
+
             default:
-                break;
+                Log.wtf(TAG, "Unknown calibration step reached: " + viewStatus);
+        }
+
+        if (title != -1) {
+            viewTitle.setText(title);
+        }
+
+        if (instructions != -1) {
+            viewInstructions.setText(instructions);
+        }
+
+        if (errorNotice != -1) {
+            viewErrorNotice.setText(errorNotice);
+        }
+
+        if (action != null) {
+            buttonAction.setOnClickListener(action);
+        }
+
+        if (actionLabel != -1) {
+            buttonAction.setText(actionLabel);
         }
     }
 
-    private void updateToBlock() {
-        //mText1.setText(getString(R.string.msg_block));
-        mFlipper.setDisplayedChild(0);
-
-        mStep1.setEnabled(true);
-        mText1.setEnabled(true);
-        mButton1.setEnabled(true);
-        mProgressBar1.setVisibility(View.INVISIBLE);
+    private void updateCalibrationStepView(View stepView, int viewStatus, int instructions) {
+        updateCalibrationStepView(stepView, viewStatus, -1, instructions, -1, null, -1);
     }
 
-    private void updateToBlockRead() {
-        mText1.setText(getString(R.string.msg_reading));
-        mButton1.setEnabled(false);
-        mProgressBar1.setVisibility(View.VISIBLE);
+    private void updateCalibrationStepView(View stepView, int viewStatus, int instructions, int errorNotice) {
+        updateCalibrationStepView(stepView, viewStatus, -1, instructions, errorNotice, null, -1);
+    }
+
+    private void updateCalibrationStepView(View stepView, int viewStatus, int instructions, int errorNotice, View.OnClickListener action, int actionLabel) {
+        updateCalibrationStepView(stepView, viewStatus, -1, instructions, errorNotice, action, actionLabel);
+    }
+
+    private void doReadBlockedValue() {
+        updateCalibrationStepView(mViewStep1, STEP_IN_PROGRESS, R.string.msg_reading);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final int value = ProximitySensorHelper.read(BLOCK_LIMIT, ProximitySensorHelper.READ_MAX_LIMIT);
+                final int value = ProximitySensorHelper.read(BLOCKED_MINIMAL_VALUE, ProximitySensorHelper.READ_MAX_LIMIT);
 
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         Log.d(TAG, "    blocked value = " + String.format(Locale.ENGLISH, "%3d", value));
 
-                        if (value >= BLOCK_LIMIT) {
-                            mBlockedValue = value;
-                            changeState(STATE_UNBLOCK);
-                        } else {
-                            mText1.setText(getString(R.string.msg_fail_block));
-                            changeState(STATE_FAIL);
-                        }
+                        doSaveBlockedValue(value);
                     }
                 });
             }
         }).start();
     }
 
-    private void updateToCal() {
-        mText2.setText(R.string.msg_step_success);
-        mStep3.setEnabled(true);
-        mText3.setEnabled(true);
-        mText3.setText(getString(R.string.msg_cal));
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCalibratedConfiguration.nearThreshold = mBlockedValue - NEAR_THRESHOLD_FROM_BLOCKED_VALUE;
-                mCalibratedConfiguration.farThreshold = mCalibratedConfiguration.nearThreshold - FAR_THRESHOLD_FROM_NEAR_THRESHOLD;
+    private void doSaveBlockedValue(int value) {
+        if (value >= 0) {
+            mBlockedValue = value;
 
-                if (mNonBlockedValue == 0) {
-                    // TODO ignore if there was a calibration but no reboot as the persisted data will not be read until next reboot
-                    mCalibratedConfiguration.offsetCompensation = Math.min(Math.max(mPersistedConfiguration.offsetCompensation - 2, ProximitySensorConfiguration.MIN_OFFSET_COMPENSATION), ProximitySensorConfiguration.MAX_OFFSET_COMPENSATION);
-                    Log.d(TAG, "New offset based on current offset only");
-                } else {
-                    mCalibratedConfiguration.offsetCompensation = Math.min(Math.max(mPersistedConfiguration.offsetCompensation + (int)Math.floor(mNonBlockedValue / 32) - 1, ProximitySensorConfiguration.MIN_OFFSET_COMPENSATION), ProximitySensorConfiguration.MAX_OFFSET_COMPENSATION);
-                    Log.d(TAG, "New offset based on unblock value and current offset");
-                }
-
-                if (mCalibratedConfiguration.persistToMemory()) {
-                    storeCalibrationData();
-                    mText3.setText(getString(R.string.msg_calibration_success));
-                    mButton3.setEnabled(true);
-                    changeState(STATE_SUCCESS);
-                } else {
-                    mText3.setText(getString(R.string.msg_fail_write_sns));
-                    changeState(STATE_FAIL);
-                }
-            }
-        });
+            updateCalibrationStepView(mViewStep1, STEP_OK, R.string.msg_step_success);
+            mFlipper.setDisplayedChild(1);
+        } else {
+            updateCalibrationStepView(mViewStep1, STEP_ERROR, R.string.msg_block, R.string.msg_fail_block);
+            mFlipper.setDisplayedChild(0);
+        }
     }
 
-    private void updateToFail() {
-        mButton1.setEnabled(true);
-        changeState(STATE_BLOCK);
-    }
+    private void doReadNonBlockedValue() {
+        updateCalibrationStepView(mViewStep2, STEP_IN_PROGRESS, R.string.msg_reading);
 
-    private void updateToFailStep2() {
-        mText2.setText(getString(R.string.msg_fail_unlock));
-        mButton2.setEnabled(true);
-        changeState(STATE_UNBLOCK);
-    }
-
-    private void updateToSuccess() {
-        mFlipper.setDisplayedChild(2);
-        setSuccessfullyCalibrated(this, true);
-        mText2.setText(R.string.msg_step_success);
-        mButton3.setEnabled(true);
-    }
-
-    private void updateToUnblockRead() {
-        mText2.setText(getString(R.string.msg_reading));
-        mButton2.setEnabled(false);
-        mProgressBar2.setVisibility(View.VISIBLE);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final int value = ProximitySensorHelper.read(ProximitySensorHelper.READ_MIN_LIMIT, (mCalibratedConfiguration.nearThreshold + NEAR_THRESHOLD_FROM_BLOCKED_VALUE - 5));
+                final int value = ProximitySensorHelper.read(ProximitySensorHelper.READ_MIN_LIMIT, (mBlockedValue - NON_BLOCKED_MAXIMAL_VALUE_FROM_BLOCKED_VALUE));
 
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         Log.d(TAG, "non-blocked value = " + String.format(Locale.ENGLISH, "%3d", value));
 
-                        if (value >= 0 && value <= (mBlockedValue - 5)) {
-                            mNonBlockedValue = value;
-                            changeState(STATE_CAL);
-                        } else {
-                            mText1.setText(getString(R.string.msg_fail_unlock));
-                            changeState(STATE_FAIL_STEP_2);
-                        }
+                        doSaveNonBlockedValue(value);
                     }
                 });
             }
         }).start();
     }
 
+    private void doSaveNonBlockedValue(int value) {
+        if (value >= 0) {
+            mNonBlockedValue = value;
+
+            updateCalibrationStepView(mViewStep2, STEP_OK, R.string.msg_step_success);
+            mFlipper.setDisplayedChild(2);
+
+            doCalibrate();
+        } else {
+            updateCalibrationStepView(mViewStep2, STEP_ERROR, R.string.msg_unblock, R.string.msg_fail_unlock);
+            mFlipper.setDisplayedChild(1);
+        }
+    }
+
+    public void doCalibrate() {
+        updateCalibrationStepView(mViewStep3, STEP_IN_PROGRESS, R.string.msg_cal);
+
+        mCalibratedConfiguration.nearThreshold = mBlockedValue - NEAR_THRESHOLD_FROM_BLOCKED_VALUE;
+        mCalibratedConfiguration.farThreshold = mCalibratedConfiguration.nearThreshold - FAR_THRESHOLD_FROM_NEAR_THRESHOLD;
+
+        if (mNonBlockedValue == 0) {
+            // TODO ignore if there was a calibration but no reboot as the persisted data will not be read until next reboot
+            mCalibratedConfiguration.offsetCompensation = Math.min(Math.max(mPersistedConfiguration.offsetCompensation - 2, ProximitySensorConfiguration.MIN_OFFSET_COMPENSATION), ProximitySensorConfiguration.MAX_OFFSET_COMPENSATION);
+            Log.d(TAG, "New offset based on current offset only");
+        } else {
+            mCalibratedConfiguration.offsetCompensation = Math.min(Math.max(mPersistedConfiguration.offsetCompensation + (int)Math.floor(mNonBlockedValue / 32) - 1, ProximitySensorConfiguration.MIN_OFFSET_COMPENSATION), ProximitySensorConfiguration.MAX_OFFSET_COMPENSATION);
+            Log.d(TAG, "New offset based on unblock value and current offset");
+        }
+
+        if (mCalibratedConfiguration.persistToMemory()) {
+            storeCalibrationData();
+            setSuccessfullyCalibrated(this, true);
+
+            // wait a bit because the calibration is otherwise too fast
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(CALIBRATION_DELAY_MS);
+                    } catch (InterruptedException e) {
+                        // Log but ignore interruption.
+                        Log.e(TAG, e.getMessage());
+                    }
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateCalibrationStepView(mViewStep3, STEP_CURRENT, R.string.msg_calibration_success);
+                            mFlipper.setDisplayedChild(2);
+                        }
+                    });
+                }
+            }).start();
+        } else {
+            updateCalibrationStepView(mViewStep3, STEP_ERROR, R.string.msg_cal, R.string.msg_fail_write_sns, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    reset();
+                    startFairphoneUpdaterActivity();
+                }
+            }, R.string.go_to_updater);
+        }
+
+    }
+
     @Override
     protected void onPause() {
         UpdateFinalizerService.startActionCheckCalibrationPending(this);
         super.onPause();
-    }
-
-    private void updateToUnblock() {
-        mFlipper.setDisplayedChild(1);
-        mProgressBar2.setVisibility(View.INVISIBLE);
-        mStep2.setEnabled(true);
-        mText2.setEnabled(true);
-        mButton2.setEnabled(true);
     }
 
     private void storeCalibrationData() {
@@ -452,6 +448,13 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
         return hasToBeCalibrated(ctx, false);
     }
 
+    private void startFairphoneUpdaterActivity() {
+        final Intent intent = new Intent();
+        intent.setComponent(new ComponentName(getString(R.string.package_fairphone_updater), getString(R.string.activity_fairphone_updater_check_for_updates)));
+        intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     private void showIncompatibleDeviceDialog() {
         final DialogFragment dialog = new IncompatibleDeviceDialog();
         dialog.show(getFragmentManager(), getString(R.string.fragment_tag_incompatible_device_dialog));
@@ -459,10 +462,7 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
 
     @Override
     public void onIncompatibleDeviceDialogPositiveAction(DialogFragment dialog) {
-        final Intent intent = new Intent();
-        intent.setComponent(new ComponentName(getString(R.string.package_fairphone_updater), getString(R.string.activity_fairphone_updater_check_for_updates)));
-        intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        startFairphoneUpdaterActivity();
     }
 
     @Override
