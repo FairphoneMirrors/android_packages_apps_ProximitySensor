@@ -6,6 +6,7 @@
     <dimen name="header_small_height">56dp</dimen>
     <dimen name="header_big_text_size">34sp</dimen>
     <dimen name="header_small_text_size">20sp</dimen>
+    <dimen name="header_padding">8sp</dimen>
 
     <!-- MAIN -->
     <dimen name="main_margin">32dp</dimen>
