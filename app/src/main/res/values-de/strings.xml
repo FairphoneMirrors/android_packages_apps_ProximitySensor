@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="app_name">Näherungssensorwerkzeug</string>
+    <string name="app_name">Näherungssensor-Tool</string>
     <string name="Exit">Schließen</string>
     <string name="Heading">Noch ein letzter Schritt…</string>
     <string name="NotificationText">Kalibriere den Näherungssensor deines Fairphones.</string>
@@ -9,7 +9,7 @@
     <string name="activity_calibration">Kalibrierung</string>
     <string name="activity_diagnostics">Diagnostik</string>
     <string name="ask_really_dont_show_title">Bist du sicher?</string>
-    <string name="ask_really_dont_show_text"><![CDATA[Die Kalibrierung des Näherungssensors ist einfach und verbessert Bildschirmverhalten während Telefonaten. <it>Du kannst die Kalibrierung jederzeit in Einstellungen → Wartung → Nähesensorwerkzeug starten</it>.]]></string>
+    <string name="ask_really_dont_show_text">Die Kalibrierung des Näherungssensors ist einfach und verbessert Bildschirmverhalten während Telefonaten. <it>Du kannst die Kalibrierung jederzeit in Einstellungen → Wartung → Näherungssensor-Tool</it>.</string>
     <string name="block_value">Wert wenn abgedeckt:</string>
     <string name="cancel">Abbrechen</string>
     <string name="dontshowagain">Diese Meldung künftig nicht mehr zeigen.</string>
@@ -23,7 +23,7 @@
     <string name="msg_fail_cal">Kalibrierung fehlgeschlagen. Bitte überprüfe das Gerät und versuch es noch einmal.</string>
     <string name="msg_fail_unlock">Hier ging was schief. Bitte probier es noch einmal. Stelle sicher, dass der Sensorbereich frei und der Bildschirm sauber sind.</string>
     <string name="msg_fail_write_sns">Ein unerwartetes Problem mit Rechten ist aufgetreten…</string>
-    <string name="msg_reading">Lesen…</string>
+    <string name="msg_reading">Informationen werden vom Näherungssensor abgerufen…</string>
     <string name="msg_step_success">Fertig</string>
     <string name="msg_unblock">Entferne deinen Finger vom Sensorbereich und drücke danach auf Weiter.</string>
     <string name="name_exit">Schließen</string>
@@ -37,4 +37,8 @@
     <string name="step_3">Schritt 3/3</string>
     <string name="unblock_value">Wert wenn frei:</string>
     <string name="NotificationTitle">Näherungssensorkalibrierung</string>
-</resources>
+<string name="incompatible_device">Inkompatibles Gerät</string>
+    <string name="device_cannot_run_calibration_tool">Das Kalibrierungs-Tool kann nicht auf deinem Fairphone 2 gestartet werden. Bitte stell sicher, dass die aktuellste Softwareversion installiert ist.</string>
+
+    <string name="go_to_updater">Suche nach Updates</string>
+    </resources>
