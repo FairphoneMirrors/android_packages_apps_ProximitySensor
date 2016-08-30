@@ -15,16 +15,12 @@
     <string name="msg_block">Recouvrez la zone du capteur entièrement avec votre doigt (la zone à couvrir est illustrée par l\'image ci-dessus), puis utilisez le bouton Suivant.</string>
     <string name="msg_cal">Calibration en cours…</string>
     <string name="msg_calibration_success"><![CDATA[Calibration terminée ! Utilisez le bouton OK & Redémarrer pour finaliser la procédure et redémarrer votre Fairphone.]]></string>
-    <string name="msg_fail">Échec</string>
     <string name="msg_fail_block">Une erreur est survenue, merci de recommencer. Assurez vous de couvrir complètement la zone du capteur.</string>
-    <string name="msg_fail_cal">Échec de la calibration. Veuillez vérifier votre téléphone puis recommencer.</string>
     <string name="msg_fail_unlock">Une erreur est survenue, merci de recommencer. Assurez vous d\'emlever votre doigt de la zone du capteur et de vérifier que votre écran est propre.</string>
     <string name="msg_fail_write_sns">Une erreur est survenue, assurez vous que votre téléphone soit à jour avant de réessayer.</string>
     <string name="msg_reading">Lecture du capteur de proximité en cours…</string>
     <string name="msg_step_success">Succès</string>
     <string name="msg_unblock">Enlevez votre doigt de la zone du capteur puis utilisez le bouton Suivant.</string>
-    <string name="name_exit">Quitter</string>
-    <string name="name_read">OK</string>
     <string name="next">Suivant</string>
     <string name="reboot"><![CDATA[OK & Redémarrer]]></string>
     <string name="sensor_value">Valeur du capteur:</string>
@@ -37,8 +33,7 @@
     <string name="NotificationTitle">Calibration du capteur de proximité</string>
     <string name="ask_really_dont_show_text"><![CDATA[La calibration du capteur de proximité est simple à réaliser and améliorera votre confort d\'appel. <it>Vous pouvez (re-)calibrer le capteur de proximité à n\'importe quel moment via Paramètres → Maintenance → Capteur de proximité</it>.]]></string>
     <string name="not_triggered">Non activé</string>
-<string name="incompatible_device">Équipement incompatible</string>
+    <string name="incompatible_device">Équipement incompatible</string>
     <string name="device_cannot_run_calibration_tool">L\'outil de calibration ne peut pas être exécuté sur votre Fairphone 2. Assurez vous que le système de votre téléphone soit à jour.</string>
-
     <string name="go_to_updater">Vérifier les mises à jour</string>
-    </resources>
+</resources>

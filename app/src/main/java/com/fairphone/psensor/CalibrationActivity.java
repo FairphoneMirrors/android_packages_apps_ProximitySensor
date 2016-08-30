@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -396,16 +395,18 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
         } catch (PackageManager.NameNotFoundException e) {
             Log.wtf(TAG, e);
         }
-        int verCode = pInfo.versionCode;
-        values.put(CalibrationData.COLUMN_NAME_APP_VERSION, verCode);
 
-        // Insert the new row, returning the primary key value of the new row
-        long newRowId;
-        newRowId = db.insert(
-                CalibrationData.TABLE_NAME,
-                null,
-                values);
+        if (pInfo == null) {
+            Log.wtf(TAG, "Could not retrieve PackageInfo instance.");
+        } else {
+            int verCode = pInfo.versionCode;
+            values.put(CalibrationData.COLUMN_NAME_APP_VERSION, verCode);
 
+            // Insert the new row, returning the primary key value of the new row
+            if (db.insert(CalibrationData.TABLE_NAME, null, values) == -1) {
+                Log.wtf(TAG, "Could not insert calibration data into database.");
+            }
+        }
     }
 
     private void startFairphoneUpdaterActivity() {

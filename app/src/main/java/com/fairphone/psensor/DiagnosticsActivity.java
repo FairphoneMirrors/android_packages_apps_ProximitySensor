@@ -1,6 +1,5 @@
 package com.fairphone.psensor;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -108,7 +107,7 @@ public class DiagnosticsActivity extends Activity {
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mProximitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         if (mProximitySensor == null) {
-            return;
+            // TODO do something clever
         }
     }
 

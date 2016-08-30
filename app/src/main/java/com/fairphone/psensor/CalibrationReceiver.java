@@ -10,7 +10,6 @@ import android.util.Log;
 public class CalibrationReceiver extends BroadcastReceiver
 {
 	private static final String TAG = "CalibrationReceiver";
-	String seccode= "TelephonyIntents.SECRET_CODE_ACTION";
 			
 	@Override
 	public void onReceive(Context localcontext, Intent localintent) 

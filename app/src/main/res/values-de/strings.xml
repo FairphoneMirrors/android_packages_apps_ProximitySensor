@@ -18,16 +18,12 @@
     <string name="msg_cal">Kalibrieren…</string>
     <string name="msg_calibration_success"><![CDATA[Kalibrierung erfolgreich. Drücke auf "OK & Neustart" um die Kalibrierung abzuschließen und dein Fairphone neu zu starten.]]></string>
     <string name="reboot"><![CDATA[OK & Neustart]]></string>
-    <string name="msg_fail">Fehler</string>
     <string name="msg_fail_block">Hier ging was schief. Bitte probier es noch einmal. Achte darauf den Sensorbereich komplett abzudecken.</string>
-    <string name="msg_fail_cal">Kalibrierung fehlgeschlagen. Bitte überprüfe das Gerät und versuch es noch einmal.</string>
     <string name="msg_fail_unlock">Hier ging was schief. Bitte probier es noch einmal. Stelle sicher, dass der Sensorbereich frei und der Bildschirm sauber sind.</string>
     <string name="msg_fail_write_sns">Ein unerwartetes Problem mit Rechten ist aufgetreten…</string>
     <string name="msg_reading">Informationen werden vom Näherungssensor abgerufen…</string>
     <string name="msg_step_success">Fertig</string>
     <string name="msg_unblock">Entferne deinen Finger vom Sensorbereich und drücke danach auf Weiter.</string>
-    <string name="name_exit">Schließen</string>
-    <string name="name_read">OK</string>
     <string name="next">Weiter</string>
     <string name="not_triggered">Nicht aktiviert</string>
     <string name="sensor_value">Sensorwert:</string>
@@ -37,8 +33,7 @@
     <string name="step_3">Schritt 3/3</string>
     <string name="unblock_value">Wert wenn frei:</string>
     <string name="NotificationTitle">Näherungssensorkalibrierung</string>
-<string name="incompatible_device">Inkompatibles Gerät</string>
+    <string name="incompatible_device">Inkompatibles Gerät</string>
     <string name="device_cannot_run_calibration_tool">Das Kalibrierungs-Tool kann nicht auf deinem Fairphone 2 gestartet werden. Bitte stell sicher, dass die aktuellste Softwareversion installiert ist.</string>
-
     <string name="go_to_updater">Suche nach Updates</string>
-    </resources>
+</resources>

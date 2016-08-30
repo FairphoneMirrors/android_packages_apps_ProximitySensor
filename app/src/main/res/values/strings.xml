@@ -15,13 +15,10 @@
     <string name="msg_cal">Calibrating…</string>
     <string name="msg_calibration_success"><![CDATA[Calibration successful! Press the OK & Reboot button to finalize the calibration process and to reboot your Fairphone.]]></string>
     <string name="msg_step_success">Successful</string>
-    <string name="msg_fail">Unsuccessful</string>
-    <string name="name_read">OK</string>
-    <string name="name_exit">Exit</string>
     <string name="msg_fail_block">Something went wrong, please try again. Make sure you cover the sensor area completely.</string>
-    <string name="msg_fail_cal">Calibration unsuccessful, please check the device and try again.</string>
     <string name="msg_fail_unlock">Something went wrong, please try again. Make sure to remove your finger from the sensor area and that the screen is clean.</string>
     <string name="msg_fail_write_sns">Something went wrong, please check that your device is up-to-date and try again.</string>
+    <string name="instruction_image_desc">The proximity sensor is located between the notification LED and the ear speaker.</string>
 
     <string name='not_triggered'>Not triggered</string>
     <string name='state'>State: </string>

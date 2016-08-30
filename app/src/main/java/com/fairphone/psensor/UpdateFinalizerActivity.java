@@ -125,14 +125,18 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
         try {
             PackageManager localPackageManager = ctx.getPackageManager();
             localPackageManager.setComponentEnabledSetting(new ComponentName("com.fairphone.psensor", "com.fairphone.psensor.UpdateFinalizerActivity"),PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 1);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            // TODO do something clever
+        }
     }
 
     public static void enable(Context ctx) {
         try {
             PackageManager localPackageManager = ctx.getPackageManager();
             localPackageManager.setComponentEnabledSetting(new ComponentName("com.fairphone.psensor", "com.fairphone.psensor.UpdateFinalizerActivity"),PackageManager.COMPONENT_ENABLED_STATE_ENABLED,0);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            // TODO do something clever
+        }
     }
 
     @Override
@@ -212,14 +216,14 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
         SharedPreferences sharedPref = ctx.getSharedPreferences(
                 ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(ctx.getString(R.string.preference_do_not_show_again),true);
+        editor.putBoolean(ctx.getString(R.string.preference_do_not_show_again), doNotShowAnymore);
         editor.apply();
     }
 
     static protected boolean isNotShowAnymore(Context ctx) {
         SharedPreferences sharedPref = ctx.getSharedPreferences(
                 ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
-        return sharedPref.getBoolean(ctx.getString(R.string.preference_do_not_show_again),false);
+        return sharedPref.getBoolean(ctx.getString(R.string.preference_do_not_show_again), false);
     }
 
 }
