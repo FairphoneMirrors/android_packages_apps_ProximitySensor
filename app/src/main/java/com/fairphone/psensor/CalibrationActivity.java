@@ -84,6 +84,8 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
      */
     public static final int CALIBRATION_DELAY_MS = 3000;
 
+    private boolean mAbortActivity;
+
     private ProximitySensorConfiguration mPersistedConfiguration;
     private ProximitySensorConfiguration mCalibratedConfiguration;
 
@@ -117,12 +119,15 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
         if (!ProximitySensorHelper.canReadProximitySensorValue()) {
             Log.w(TAG, "Proximity sensor value not read-able, aborting.");
 
+            mAbortActivity = true;
             showIncompatibleDeviceDialog();
         } else if (!ProximitySensorConfiguration.canReadFromAndPersistToMemory()) {
             Log.w(TAG, "Proximity sensor configuration not accessible (R/W), aborting.");
 
+            mAbortActivity = true;
             showIncompatibleDeviceDialog();
         } else {
+            mAbortActivity = false;
             init();
         }
     }
@@ -130,6 +135,10 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (mAbortActivity) {
+            return;
+        }
 
         if (CalibrationStatusHelper.isCalibrationPending(this)) {
             updateCalibrationStepView(mViewStep3, STEP_CURRENT, R.string.step_3, R.string.msg_calibration_success, -1, actionReboot, R.string.reboot);
