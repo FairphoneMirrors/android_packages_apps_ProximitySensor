@@ -16,7 +16,6 @@
     <string name="msg_cal">Kalibreren…</string>
     <string name="msg_calibration_success"><![CDATA[Kalibratie succesvol! Druk op de OK & Herstart knop om de kalibratie af te ronden en je Fairphone te herstarten.]]></string>
     <string name="Text"> <p>Fairphone OS geeft je nu de mogelijkheid om de afstandssensor te kalibreren - dit verbetert het gedrag van de sensor tijdens een telefoongesprek (scherm uit/aan).</p> <p>We raden je aan de afstandssensor te kalibreren - dit is eenvoudig en zo gepiept!</p></string>
-    <string name="Text"> <p>Fairphone OS geeft je nu de mogelijkheid om de afstandssensor te kalibreren - dit verbetert het gedrag van de sensor tijdens een telefoongesprek (scherm uit/aan).</p> <p>We raden je aan de afstandssensor te kalibreren - dit is eenvoudig en zo gepiept!</p></string>
     <string name="msg_fail_block">Er is iets misgegaan, probeer het opnieuw. Zorg ervoor dat je de sensor volledig bedekt.</string>
     <string name="msg_fail_unlock">Er is iets misgegaan, probeer het opnieuw. Zorg ervoor dat je vinger is verwijderd van de sensor en dat het scherm schoon is.</string>
     <string name="msg_fail_write_sns">Er is iets misgegaan, controleer of je toestel up-to-date is en probeer het opnieuw.</string>
