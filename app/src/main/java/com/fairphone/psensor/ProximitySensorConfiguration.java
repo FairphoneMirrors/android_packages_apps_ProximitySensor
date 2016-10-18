@@ -13,45 +13,45 @@ import java.util.Locale;
  * Configuration fields for the proximity sensor. <br>
  * <br>
  * Using the vendor wording, the "near threshold" is the "Proximity Interrupt High threshold", the "far threshold"
- * is the "Proximity Interrupt LOW threshold", and the "offset compensation" is the "Proximity Offset Compensation".
+ * is the "Proximity Interrupt Low threshold", and the "offset compensation" is the "Proximity Offset Compensation".
  */
 public class ProximitySensorConfiguration {
     private static final String TAG = ProximitySensorConfiguration.class.getSimpleName();
 
     /**
      * Minimal offset compensation value allowed to be persisted. <br>
-     * The minimal value accepted in the registry is <code>0x0000</code>, whereas this is the minimal value considered
-     * sane from a tuning perspective.
+     * The minimal value accepted in the registry is <code>0x0000</code>, whereas this is the minimal value allowed by
+     * the device.
      */
     public static final int MIN_OFFSET_COMPENSATION = 0x0000;
     /**
      * Maximal offset compensation value allowed to be persisted. <br>
-     * The maximal value accepted in the registry is <code>0xFFFF</code>, whereas this is the maximal value considered
-     * sane from a tuning perspective.
+     * The maximal value accepted in the registry is <code>0xFFFF</code>, whereas this is the maximal value allowed by
+     * the device.
      */
-    public static final int MAX_OFFSET_COMPENSATION = 0x00FF;
+    public static final int MAX_OFFSET_COMPENSATION = 0x000F;
     /**
      * Minimal near threshold value allowed to be persisted. <br>
-     * The minimal value accepted in the registry is <code>0x0000</code>, whereas this is the minimal value considered
-     * sane from a tuning perspective.
+     * The minimal value accepted in the registry is <code>0x0000</code>, whereas this is the minimal value allowed by
+     * the device.
      */
     public static final int MIN_NEAR_THRESHOLD = 0x0000;
     /**
      * Maximal near threshold value allowed to be persisted. <br>
-     * The maximal value accepted in the registry is <code>0xFFFF</code>, whereas this is the maximal value considered
-     * sane from a tuning perspective.
+     * The maximal value accepted in the registry is <code>0xFFFF</code>, whereas this is the maximal value allowed by
+     * the device.
      */
     public static final int MAX_NEAR_THRESHOLD = 0x00FF;
     /**
      * Minimal far threshold value allowed to be persisted. <br>
-     * The minimal value accepted in the registry is <code>0x0000</code>, whereas this is the minimal value considered
-     * sane from a tuning perspective.
+     * The minimal value accepted in the registry is <code>0x0000</code>, whereas this is the minimal value allowed by
+     * the device.
      */
     public static final int MIN_FAR_THRESHOLD = 0x0000;
     /**
      * Maximal far threshold value allowed to be persisted. <br>
-     * The maximal value accepted in the registry is <code>0xFFFF</code>, whereas this is the maximal value considered
-     * sane from a tuning perspective.
+     * The maximal value accepted in the registry is <code>0xFFFF</code>, whereas this is the maximal value allowed by
+     * the device.
      */
     public static final int MAX_FAR_THRESHOLD = 0x00FF;
 
