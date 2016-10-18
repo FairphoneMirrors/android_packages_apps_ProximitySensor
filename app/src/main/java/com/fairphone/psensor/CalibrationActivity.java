@@ -41,14 +41,15 @@ import java.util.Locale;
  * compensation.<br>
  * <br>
  * The dynamic offset compensation is computed from the non-blocked value read at step 2.<br>
- * The rules are as follow:
+ * The rules and heuristic are as follow:
  * <ol>
  * <li>The read value is reduced by approx. 32 (sensor units) for each offset compensation increment (from the
  * specification).</li>
- * <li>According to the vendor, the value read must be above 0 when non-blocked, so we use the offset value directly
- * lower than floor("value read"/32) to be on the safe side.</li>
- * <li>This also allows to take into account a dirty current state. The non-blocked value then belongs to [32;63] in
- * the current conditions.</li>
+ * <li>According to the vendor, the value read must be above 0 when non-blocked and as close to is as possible, we
+ * use the integer part of <code>floor("value read"/32)</code> value and decrement it by 1..</li>
+ * <li>By doing so, we take into consideration the current state that might be (and likely is) not perfectly clean.
+ * A cleaner state will result in lower values read, and we do not wish to have values &lt; 0 read. The non-blocked
+ * value then belongs to [32;63] in the current conditions.</li>
  * <li>If the value read is already 0, we lower the persisted offset by 2 to reach a similar non-blocked range than
  * above.</li>
  * <li>The proximity sensor offset compensation belongs to [{@link ProximitySensorConfiguration#MIN_OFFSET_COMPENSATION}, {@link ProximitySensorConfiguration#MAX_OFFSET_COMPENSATION}].</li>
