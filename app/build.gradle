@@ -7,8 +7,8 @@ android {
         applicationId "com.fairphone.psensor"
         minSdkVersion 22
         targetSdkVersion 23
-        versionCode 20200
-        versionName "2.2.0"
+        versionCode 20201
+        versionName "2.2.1"
     }
     buildTypes {
         release {
