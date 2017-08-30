@@ -51,11 +51,21 @@
     <string name="preference_successfully_calibrated" translatable="false">preference_successfully_calibrated</string>
     <string name="NotificationTitle">Finalizing Update</string>
 
+    <string name="receiver_module_changed_title">Top module replaced</string>
+    <string name="receiver_module_changed_summary">Calibrate the proximity sensor.</string>
+    <string name="receiver_module_changed_extended_summary">The top module has been replaced. The proximity sensor needs to be calibrated.</string>
+    <string name="receiver_module_successfully_changed_title">Top module\nsuccessfully replaced</string>
+    <string name="your_receiver_module_has_been_replaced">Your top module has been replaced.</string>
+    <string name="you_need_to_calibrate_the_proximity_sensor">You need to calibrate the proximity sensor to ensure it works properly.</string>
+    <string name="we_will_guide_you">"We'll guide you through three simple steps."</string>
+    <string name="later">Remind me later</string>
+
     <!-- FRAGMENT TAGS -->
     <string name="fragment_tag_incompatible_device_dialog" translatable="false">incompatible_device</string>
 
     <!-- SHARED PREFERENCES -->
     <string name="preference_pending_calibration" translatable="false">preference_pending_calibration</string>
+    <string name="preference_calibration_needed_after_receiver_module_changed" translatable="false">preference_calibration_needed_after_receiver_module_changed</string>
 
     <!-- EXTERNAL PACKAGES AND ACTIVITIES -->
     <string name="package_fairphone_updater" translatable="false">com.fairphone.updater</string>

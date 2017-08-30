@@ -23,6 +23,8 @@ public class BootUpReceiver extends BroadcastReceiver {
             if (CalibrationStatusHelper.isCalibrationPending(context)) {
                 CalibrationStatusHelper.setCalibrationCompleted(context);
             }
+
+            CalibrationService.startActionHandleBootCompleted(context);
         }
         if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
             UpdateFinalizerService.startActionShutdown(context);

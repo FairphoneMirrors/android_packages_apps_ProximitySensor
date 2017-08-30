@@ -28,6 +28,11 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="ButtonWhiteGrey" parent="@style/Button">
+        <item name="android:background">@drawable/button_grey_background</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="ButtonWhitePink" parent="@style/Button">
         <item name="android:background">@drawable/button_pink_transparent_background</item>
         <item name="android:textColor">@color/white</item>

@@ -76,6 +76,8 @@ public class CalibrationStatusHelper {
             context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        editor.putBoolean(
+                context.getString(R.string.preference_calibration_needed_after_receiver_module_changed), false);
         editor.putBoolean(context.getString(R.string.preference_pending_calibration), false);
 
         editor.apply();
@@ -88,6 +90,31 @@ public class CalibrationStatusHelper {
 
         editor.putBoolean(context.getString(R.string.preference_successfully_calibrated), true);
         editor.putBoolean(context.getString(R.string.preference_pending_calibration), true);
+
+        editor.apply();
+    }
+
+    public static boolean isCalibrationNeededAfterReceiverModuleChanged(Context context) {
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        return sharedPreferences.getBoolean(
+                context.getString(R.string.preference_calibration_needed_after_receiver_module_changed), false);
+    }
+
+    public static void setCalibrationNeededAfterReceiverModuleChanged(Context context) {
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putBoolean(
+                context.getString(R.string.preference_calibration_needed_after_receiver_module_changed), true);
+        /*
+         * Force any previous calibration done during this session, but before this call, to be
+         * invalid. We want to make sure the pending calibration was not done before we could detect
+         * a module change.
+         */
+        editor.putBoolean(context.getString(R.string.preference_pending_calibration), false);
 
         editor.apply();
     }

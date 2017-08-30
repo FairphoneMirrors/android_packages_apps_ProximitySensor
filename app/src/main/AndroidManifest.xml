@@ -18,6 +18,10 @@
     <uses-permission android:name="android.permission.STOP_APP_SWITCHES" />
     <uses-permission android:name="android.permission.REBOOT" tools:ignore="ProtectedPermissions"/>
 
+    <permission
+        android:name="com.fairphone.psensor.permission.CALIBRATE_PROXIMITY_SENSOR"
+        android:protectionLevel="signature" />
+
     <application
         android:allowBackup="true"
         android:label="@string/app_full_name"
@@ -65,6 +69,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ReceiverModuleChangedActivity"
+            android:label="@string/receiver_module_changed_title"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name="com.fairphone.psensor.BootUpReceiver"
             android:enabled="true"
@@ -81,6 +94,11 @@
             android:enabled="false"
             android:exported="false" />
 
+        <service
+            android:name=".CalibrationService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.fairphone.psensor.permission.CALIBRATE_PROXIMITY_SENSOR" />
     </application>
 
 </manifest>
