@@ -2,6 +2,7 @@ package com.fairphone.psensor.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.fairphone.psensor.ProximitySensorConfiguration;
 import com.fairphone.psensor.R;
@@ -10,6 +11,10 @@ import com.fairphone.psensor.R;
  * Helper methods to access the shared preferences of the app.
  */
 public class CalibrationStatusHelper {
+
+    private static final String TAG = "CalibrationStatusHelper";
+
+    private static final boolean DEBUG = false;
 
     /**
      * Empty constructor to avoid instantiation.
@@ -40,10 +45,14 @@ public class CalibrationStatusHelper {
             if (calibrateNullCompensation) {
                 final ProximitySensorConfiguration persistedConfiguration = ProximitySensorConfiguration.readFromMemory();
                 hasToBeCalibrated = (persistedConfiguration != null) && (persistedConfiguration.offsetCompensation == 0);
+
+                if (DEBUG) Log.d(TAG, "Calibration depends on null compensation, required=" + hasToBeCalibrated);
             } else {
                 final SharedPreferences sharedPref = context.getSharedPreferences(
                         context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                 hasToBeCalibrated = !sharedPref.getBoolean(context.getString(R.string.preference_successfully_calibrated), false);
+
+                if (DEBUG) Log.d(TAG, "Calibration does not depend on null compensation, required=" + hasToBeCalibrated);
             }
         } else {
             /* Memory is not accessible, so no calibration is required. */
@@ -72,6 +81,8 @@ public class CalibrationStatusHelper {
     }
 
     public static void setCalibrationCompleted(Context context) {
+        if (DEBUG) Log.d(TAG, "Calibration completed");
+
         final SharedPreferences sharedPreferences = context.getSharedPreferences(
             context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -84,6 +95,8 @@ public class CalibrationStatusHelper {
     }
 
     public static void setCalibrationSuccessful(Context context) {
+        if (DEBUG) Log.d(TAG, "Calibration process successful, now pending");
+
         final SharedPreferences sharedPreferences = context.getSharedPreferences(
             context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -103,6 +116,8 @@ public class CalibrationStatusHelper {
     }
 
     public static void setCalibrationNeededAfterReceiverModuleChanged(Context context) {
+        if (DEBUG) Log.d(TAG, "Calibration needed because the receiver module changed");
+
         final SharedPreferences sharedPreferences = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
