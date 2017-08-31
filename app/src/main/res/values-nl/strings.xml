@@ -36,4 +36,12 @@
     <string name="incompatible_device">Onverenigbaar toestel</string>
     <string name="go_to_updater">Controleren op updates</string>
     <string name="device_cannot_run_calibration_tool">De kalibratie tool kan niet starten op je Fairphone 2. Zorg ervoor dat je toestel de laatste software update draait.</string>
+    <string name="receiver_module_changed_title">Bovenste module</string>
+    <string name="receiver_module_changed_summary">Kalibreer de nabijheidssensor.</string>
+    <string name="receiver_module_changed_extended_summary">De bovenste module is vervangen. De nabijheidssensor moet gekalibreerd worden.</string>
+    <string name="receiver_module_successfully_changed_title">Bovenste module\nsuccesvol vervangen</string>
+    <string name="your_receiver_module_has_been_replaced">Je bovenste module is vervangen.</string>
+    <string name="you_need_to_calibrate_the_proximity_sensor">Je moet de nabijheidssensor kalibreren om ervoor te zorgen dat hij goed werkt.</string>
+    <string name="we_will_guide_you">We zullen je begeleiden door drie eenvoudige stappen.</string>
+    <string name="later">Later</string>
 </resources>

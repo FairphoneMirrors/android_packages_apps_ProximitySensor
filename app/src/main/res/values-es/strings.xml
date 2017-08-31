@@ -15,7 +15,7 @@
     <string name="msg_fail_write_sns">Ha ocurrido un error, comprueba que tu dispositivo está actualizado e intenta de nuevo.</string>
     <string name="msg_reading">Obteniendo información del sensor de proximidad…</string>
     <string name="msg_unblock">Retira el dedo del sensor y pulsa Próximo.</string>
-    <string name="next">Próximo</string>
+    <string name="next">Siguiente</string>
     <string name="dontshowagain">No mostrar esta pantalla de nuevo.</string>
     <string name="unblock_value">Valor sensor libre:</string>
     <string name="step_1">Paso 1/3</string>
@@ -36,4 +36,12 @@
     <string name="incompatible_device">Dispositivo no compatible</string>
     <string name="device_cannot_run_calibration_tool">La herramienta de calibración no es compatible con tu Fairphone 2. Asegúrate que tu dispositivo está corriendo la última actualización de software.</string>
     <string name="go_to_updater">Comprobar si hay actualizaciones</string>
+    <string name="receiver_module_changed_title">Módulo superior</string>
+    <string name="receiver_module_changed_summary">Calibra el sensor de proximidad.</string>
+    <string name="receiver_module_changed_extended_summary">El módulo superior ha sido reemplazado. El sensor de proximidad necesita ser calibrado.</string>
+    <string name="receiver_module_successfully_changed_title">Módulo superior\nreemplazado con éxito.</string>
+    <string name="your_receiver_module_has_been_replaced">Tu módulo superior ha sido reemplazado.</string>
+    <string name="you_need_to_calibrate_the_proximity_sensor">Necesitas calibrar el sensor de proximidad para asegurar que funciona correctamente.</string>
+    <string name="we_will_guide_you">Te guiaremos a través de tres simples pasos.</string>
+    <string name="later">Luego</string>
 </resources>

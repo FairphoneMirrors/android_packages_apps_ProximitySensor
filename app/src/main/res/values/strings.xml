@@ -58,7 +58,7 @@
     <string name="your_receiver_module_has_been_replaced">Your top module has been replaced.</string>
     <string name="you_need_to_calibrate_the_proximity_sensor">You need to calibrate the proximity sensor to ensure it works properly.</string>
     <string name="we_will_guide_you">"We'll guide you through three simple steps."</string>
-    <string name="later">Remind me later</string>
+    <string name="later">Later</string>
 
     <!-- FRAGMENT TAGS -->
     <string name="fragment_tag_incompatible_device_dialog" translatable="false">incompatible_device</string>

@@ -36,4 +36,12 @@
     <string name="incompatible_device">Inkompatibles Gerät</string>
     <string name="device_cannot_run_calibration_tool">Das Kalibrierungs-Tool kann nicht auf deinem Fairphone 2 gestartet werden. Bitte stell sicher, dass die aktuellste Softwareversion installiert ist.</string>
     <string name="go_to_updater">Suche nach Updates</string>
+    <string name="receiver_module_changed_title">Top-Modul</string>
+    <string name="receiver_module_changed_summary">Kalibriere den Abstandssensor.</string>
+    <string name="receiver_module_changed_extended_summary">Dein Top-Modul wurde ausgewechselt. Der Abstandssensor muss kalibriert werden.</string>
+    <string name="receiver_module_successfully_changed_title">Top-Modul\nerfolgreich ausgewechselt.</string>
+    <string name="your_receiver_module_has_been_replaced">Dein Top-Modul wurde ausgewechselt.</string>
+    <string name="you_need_to_calibrate_the_proximity_sensor">Du musst den Abstandssensor neu kalibrieren um sicherzustellen, dass er korrekt funktioniert.</string>
+    <string name="we_will_guide_you">Wir werden dich durch drei einfache Schritte führen.</string>
+    <string name="later">Später</string>
 </resources>

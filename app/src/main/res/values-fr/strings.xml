@@ -36,4 +36,12 @@
     <string name="incompatible_device">Équipement incompatible</string>
     <string name="device_cannot_run_calibration_tool">L\'outil de calibration ne peut pas être exécuté sur votre Fairphone 2. Assurez vous que le système de votre téléphone soit à jour.</string>
     <string name="go_to_updater">Vérifier les mises à jour</string>
+    <string name="receiver_module_changed_title">Module supérieur</string>
+    <string name="receiver_module_changed_summary">Calibrez le capteur de proximité.</string>
+    <string name="receiver_module_changed_extended_summary">Le module supérieur a été remplacé. Le capteur de proximité doit être calibré.</string>
+    <string name="receiver_module_successfully_changed_title">Module supérieur\nremplacé\navec succès</string>
+    <string name="your_receiver_module_has_been_replaced">Votre module supérieur a été remplacé.</string>
+    <string name="you_need_to_calibrate_the_proximity_sensor">Vous devez calibrer le capteur de proximité pour en assurer le bon fonctionnement.</string>
+    <string name="we_will_guide_you">Laissez vous guider en trois étapes.</string>
+    <string name="later">Plus tard</string>
 </resources>
