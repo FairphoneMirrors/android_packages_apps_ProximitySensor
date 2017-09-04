@@ -14,41 +14,6 @@
         android:background="@color/background"
         android:padding="@dimen/main_padding">
 
-        <TextView
-            android:id="@+id/subtitle"
-            style="@style/TextBold16BlueDark"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/main_small_text_margin_start"
-            android:layout_marginEnd="@dimen/main_small_text_margin_end"
-            android:text="@string/your_receiver_module_has_been_replaced"
-            android:lineSpacingExtra="4sp"
-            android:textIsSelectable="false" />
-
-        <TextView
-            android:id="@+id/desc_1"
-            style="@style/TextRegular14BlueDark"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/subtitle"
-            android:layout_marginTop="@dimen/main_small_text_below_heading_margin"
-            android:layout_marginStart="@dimen/main_small_text_margin_start"
-            android:layout_marginEnd="@dimen/main_small_text_margin_end"
-            android:lineSpacingExtra="4sp"
-            android:text="@string/you_need_to_calibrate_the_proximity_sensor" />
-
-        <TextView
-            android:id="@+id/desc_2"
-            style="@style/TextRegular14BlueDark"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/desc_1"
-            android:layout_marginTop="@dimen/main_small_text_below_heading_margin"
-            android:layout_marginStart="@dimen/main_small_text_margin_start"
-            android:layout_marginEnd="@dimen/main_small_text_margin_end"
-            android:lineSpacingExtra="4sp"
-            android:text="@string/we_will_guide_you" />
-
         <Button
             android:id="@+id/button_later"
             style="@style/ButtonWhiteGrey"
@@ -65,6 +30,50 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:text="@string/next" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/button_later"
+            android:paddingStart="@dimen/main_small_text_margin_start"
+            android:paddingEnd="@dimen/main_small_text_margin_end"
+            android:layout_marginBottom="@dimen/main_small_text_below_heading_margin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/subtitle"
+                    style="@style/TextBold16BlueDark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/your_receiver_module_has_been_replaced"
+                    android:lineSpacingExtra="4sp"
+                    android:textIsSelectable="false" />
+
+                <TextView
+                    android:id="@+id/desc_1"
+                    style="@style/TextRegular14BlueDark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/main_small_text_below_heading_margin"
+                    android:lineSpacingExtra="4sp"
+                    android:text="@string/you_need_to_calibrate_the_proximity_sensor" />
+
+                <TextView
+                    android:id="@+id/desc_2"
+                    style="@style/TextRegular14BlueDark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/main_small_text_below_heading_margin"
+                    android:lineSpacingExtra="4sp"
+                    android:text="@string/we_will_guide_you" />
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </RelativeLayout>
 
