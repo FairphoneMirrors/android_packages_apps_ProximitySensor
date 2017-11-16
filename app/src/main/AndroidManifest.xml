@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.fairphone.psensor"
     android:sharedUserId="android.uid.system"
-    android:versionCode="20202"
-    android:versionName="2.2.2">
+    android:versionCode="20203"
+    android:versionName="2.2.3">
 
     <uses-sdk
         android:minSdkVersion="22"
