@@ -2,13 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.fairphone.psensor"
-    android:sharedUserId="android.uid.system"
-    android:versionCode="20203"
-    android:versionName="2.2.3">
-
-    <uses-sdk
-        android:minSdkVersion="22"
-        android:targetSdkVersion="23" />
+    android:sharedUserId="android.uid.system">
 
      <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
      <uses-permission android:name="android.permission.READ_PHONE_STATE" />
