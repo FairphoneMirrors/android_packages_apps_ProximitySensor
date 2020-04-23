@@ -1,5 +1,10 @@
 package com.fairphone.psensor;
 
+import android.content.Context;
+import android.content.Intent;
+
+import androidx.annotation.NonNull;
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -24,5 +29,12 @@ public class UpdateFinalizerActivityFromNotification extends UpdateFinalizerActi
     @Override
     protected boolean isWizard() {
         return false;
+    }
+
+    @NonNull
+    public static Intent getIntent(@NonNull Context context) {
+        Intent intent = new Intent(context, UpdateFinalizerActivityFromNotification.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
     }
 }

@@ -1,12 +1,15 @@
-package com.fairphone.psensor;
+package com.fairphone.psensor.receivers;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.BroadcastReceiver;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.fairphone.psensor.CalibrationActivity;
+
+//TODO: Looks like this is not being used. Remove??
 public class CalibrationReceiver extends BroadcastReceiver
 {
 	private static final String TAG = "CalibrationReceiver";

@@ -16,6 +16,8 @@
 
 package com.fairphone.psensor;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,8 +25,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.app.AlertDialog;
-import android.app.Activity;
 import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -35,6 +35,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.fairphone.psensor.helpers.CalibrationStatusHelper;
+import com.fairphone.psensor.notifications.NotificationUtils;
 
 
 public class UpdateFinalizerActivity extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
@@ -71,7 +72,7 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
 
         setAlreadyShown();
 
-        UpdateFinalizerService.startActionClearNotification(this);
+        NotificationUtils.clearPleaseCalibrateNotification(this);
 
         if (isWizard() && !CalibrationStatusHelper.hasToBeCalibrated(this)) {
             disable(this);
@@ -118,7 +119,7 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
     }
 
     private void checkCalibratePending() {
-            UpdateFinalizerService.startActionCheckCalibrationPending(this);
+        Utils.handleCheckCalibrationPending(this);
     }
 
     public static void disable(Context ctx) {
@@ -212,7 +213,7 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
                 }
     }
 
-    static protected void setNotShowAnymore(Context ctx, boolean doNotShowAnymore) {
+    public static void setNotShowAnymore(Context ctx, boolean doNotShowAnymore) {
         SharedPreferences sharedPref = ctx.getSharedPreferences(
                 ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -220,7 +221,7 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
         editor.apply();
     }
 
-    static protected boolean isNotShowAnymore(Context ctx) {
+    public static boolean isNotShowAnymore(Context ctx) {
         SharedPreferences sharedPref = ctx.getSharedPreferences(
                 ctx.getString(R.string.preference_file_key), MODE_PRIVATE);
         return sharedPref.getBoolean(ctx.getString(R.string.preference_do_not_show_again), false);

@@ -22,6 +22,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.fairphone.psensor.workers.WorkerUtils;
+
 public class ReceiverModuleChangedActivity extends Activity implements View.OnClickListener {
 
     private Button mButtonLater;
@@ -45,7 +47,7 @@ public class ReceiverModuleChangedActivity extends Activity implements View.OnCl
             // Do not dismiss the notification; using it again will resume the calibration activity
             // until it is complete.
         } else if (mButtonLater == v) {
-            CalibrationService.startActionRemindReceiverModuleChangedLater(this);
+            WorkerUtils.setReminder(this);
             finish();
         }
     }

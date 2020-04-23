@@ -73,7 +73,7 @@
         </activity>
 
         <receiver
-            android:name="com.fairphone.psensor.BootUpReceiver"
+            android:name="com.fairphone.psensor.receivers.BootUpReceiver"
             android:enabled="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
             <intent-filter>
@@ -83,16 +83,13 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name="com.fairphone.psensor.UpdateFinalizerService"
-            android:enabled="false"
-            android:exported="false" />
+        <receiver android:name=".receivers.ProximitySensorBroadcastReceiver"  android:exported="true"
+            android:permission="com.fairphone.psensor.permission.CALIBRATE_PROXIMITY_SENSOR">
+            <intent-filter>
+                <action android:name="com.fairphone.psensor.receivers.ACTION_HANDLE_RECEIVER_MODULE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
-        <service
-            android:name=".CalibrationService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="com.fairphone.psensor.permission.CALIBRATE_PROXIMITY_SENSOR" />
     </application>
 
 </manifest>

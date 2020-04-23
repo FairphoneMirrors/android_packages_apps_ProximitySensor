@@ -380,7 +380,7 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
 
     @Override
     protected void onPause() {
-        UpdateFinalizerService.startActionCheckCalibrationPending(this);
+        Utils.handleCheckCalibrationPending(this);
         super.onPause();
     }
 
