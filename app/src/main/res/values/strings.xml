@@ -71,4 +71,7 @@
     <string name="package_fairphone_updater" translatable="false">com.fairphone.updater</string>
     <string name="activity_fairphone_updater_check_for_updates" translatable="false">com.fairphone.updater.FairphoneUpdater</string>
 
+    <string name="notification_channel_id" translatable="false">proximity_sensor_notifications</string>
+    <string name="notification_channel_name" translatable="false">Notifications</string>
+
 </resources>

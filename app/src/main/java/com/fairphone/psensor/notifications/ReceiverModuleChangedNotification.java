@@ -22,6 +22,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.core.app.NotificationCompat;
+
 import com.fairphone.psensor.R;
 import com.fairphone.psensor.ReceiverModuleChangedActivity;
 
@@ -45,20 +47,21 @@ public class ReceiverModuleChangedNotification {
      * {@link #dismiss(Context)}.
      */
     public static void show(Context context) {
-        final Notification notification = new Notification.Builder(context)
+        String channelId = context.getString(R.string.notification_channel_id);
+        final Notification notification = new NotificationCompat.Builder(context, channelId)
                 .setContentTitle(context.getString(R.string.receiver_module_changed_title))
                 .setContentText(context.getString(R.string.receiver_module_changed_summary))
                 .setSmallIcon(R.drawable.ic_stat_action_calibrate)
                 .setColor(context.getResources().getColor(R.color.theme_primary))
-                .setStyle(new Notification.BigTextStyle().bigText(
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(
                         context.getString(R.string.receiver_module_changed_extended_summary)))
                 .setContentIntent(getPendingContentIntent(context))
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setOngoing(true)
                 .build();
 
-        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
+        NotificationUtils.getNotificationManager(context)
                 .notify(NOTIFICATION_ID, notification);
     }
 

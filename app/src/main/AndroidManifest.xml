@@ -16,6 +16,7 @@
         android:protectionLevel="signature" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:label="@string/app_full_name"
         android:theme="@style/AppTheme"
