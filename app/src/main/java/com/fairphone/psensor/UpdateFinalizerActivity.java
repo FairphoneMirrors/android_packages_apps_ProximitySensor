@@ -125,16 +125,7 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
     public static void disable(Context ctx) {
         try {
             PackageManager localPackageManager = ctx.getPackageManager();
-            localPackageManager.setComponentEnabledSetting(new ComponentName("com.fairphone.psensor", "com.fairphone.psensor.UpdateFinalizerActivity"),PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 1);
-        } catch (Exception e) {
-            // TODO do something clever
-        }
-    }
-
-    public static void enable(Context ctx) {
-        try {
-            PackageManager localPackageManager = ctx.getPackageManager();
-            localPackageManager.setComponentEnabledSetting(new ComponentName("com.fairphone.psensor", "com.fairphone.psensor.UpdateFinalizerActivity"),PackageManager.COMPONENT_ENABLED_STATE_ENABLED,0);
+            localPackageManager.setComponentEnabledSetting(new ComponentName("com.fairphone.psensor", "com.fairphone.psensor.UpdateFinalizerActivity"),PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         } catch (Exception e) {
             // TODO do something clever
         }

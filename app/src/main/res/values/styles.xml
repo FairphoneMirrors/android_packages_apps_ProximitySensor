@@ -33,11 +33,6 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="ButtonWhitePink" parent="@style/Button">
-        <item name="android:background">@drawable/button_pink_transparent_background</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
     <!-- TEXT REGULAR -->
     <style name="TextRegular">
         <item name="android:fontFamily">sans-serif</item>
@@ -47,71 +42,11 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="TextRegular16" parent="@style/TextRegular">
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="TextRegular14BlueLight" parent="@style/TextRegular14">
-        <item name="android:textColor">@color/blue_light</item>
-    </style>
-
     <style name="TextRegular14BlueDark" parent="@style/TextRegular14">
         <item name="android:textColor">@color/blue_dark</item>
     </style>
 
-    <style name="TextRegular14GreenLight" parent="@style/TextRegular14">
-        <item name="android:textColor">@color/green_light</item>
-    </style>
-
-    <style name="TextRegular14GreenDark" parent="@style/TextRegular14">
-        <item name="android:textColor">@color/green_dark</item>
-    </style>
-
-    <style name="TextRegular14GreyLight" parent="@style/TextRegular14">
-        <item name="android:textColor">@color/grey_light</item>
-    </style>
-
-    <style name="TextRegular14GreyDark" parent="@style/TextRegular14">
-        <item name="android:textColor">@color/grey_dark</item>
-    </style>
-
-    <style name="TextRegular14PinkLight" parent="@style/TextRegular14">
-        <item name="android:textColor">@color/pink_light</item>
-    </style>
-
     <style name="TextRegular14PinkDark" parent="@style/TextRegular14">
-        <item name="android:textColor">@color/pink_dark</item>
-    </style>
-
-    <style name="TextRegular16BlueLight" parent="@style/TextRegular16">
-        <item name="android:textColor">@color/blue_light</item>
-    </style>
-
-    <style name="TextRegular16BlueDark" parent="@style/TextRegular16">
-        <item name="android:textColor">@color/blue_dark</item>
-    </style>
-
-    <style name="TextRegular16GreenLight" parent="@style/TextRegular16">
-        <item name="android:textColor">@color/green_light</item>
-    </style>
-
-    <style name="TextRegular16GreenDark" parent="@style/TextRegular16">
-        <item name="android:textColor">@color/green_dark</item>
-    </style>
-
-    <style name="TextRegular16GreyLight" parent="@style/TextRegular16">
-        <item name="android:textColor">@color/grey_light</item>
-    </style>
-
-    <style name="TextRegular16GreyDark" parent="@style/TextRegular16">
-        <item name="android:textColor">@color/grey_dark</item>
-    </style>
-
-    <style name="TextRegular16PinkLight" parent="@style/TextRegular16">
-        <item name="android:textColor">@color/pink_light</item>
-    </style>
-
-    <style name="TextRegular16PinkDark" parent="@style/TextRegular16">
         <item name="android:textColor">@color/pink_dark</item>
     </style>
 
@@ -126,76 +61,12 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextBold14" parent="@style/TextBold">
-        <item name="android:textSize">14sp</item>
-    </style>
-
     <style name="TextBold16" parent="@style/TextBold">
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="TextBold14BlueLight" parent="@style/TextBold14">
-        <item name="android:textColor">@color/blue_light</item>
-    </style>
-
-    <style name="TextBold14BlueDark" parent="@style/TextBold14">
-        <item name="android:textColor">@color/blue_dark</item>
-    </style>
-
-    <style name="TextBold14GreenLight" parent="@style/TextBold14">
-        <item name="android:textColor">@color/green_light</item>
-    </style>
-
-    <style name="TextBold14GreenDark" parent="@style/TextBold14">
-        <item name="android:textColor">@color/green_dark</item>
-    </style>
-
-    <style name="TextBold14GreyLight" parent="@style/TextBold14">
-        <item name="android:textColor">@color/grey_light</item>
-    </style>
-
-    <style name="TextBold14GreyDark" parent="@style/TextBold14">
-        <item name="android:textColor">@color/grey_dark</item>
-    </style>
-
-    <style name="TextBold14PinkLight" parent="@style/TextBold14">
-        <item name="android:textColor">@color/pink_light</item>
-    </style>
-
-    <style name="TextBold14PinkDark" parent="@style/TextBold14">
-        <item name="android:textColor">@color/pink_dark</item>
-    </style>
-
-    <style name="TextBold16BlueLight" parent="@style/TextBold16">
-        <item name="android:textColor">@color/blue_light</item>
-    </style>
-
     <style name="TextBold16BlueDark" parent="@style/TextBold16">
         <item name="android:textColor">@color/blue_dark</item>
-    </style>
-
-    <style name="TextBold16GreenLight" parent="@style/TextBold16">
-        <item name="android:textColor">@color/green_light</item>
-    </style>
-
-    <style name="TextBold16GreenDark" parent="@style/TextBold16">
-        <item name="android:textColor">@color/green_dark</item>
-    </style>
-
-    <style name="TextBold16GreyLight" parent="@style/TextBold16">
-        <item name="android:textColor">@color/grey_light</item>
-    </style>
-
-    <style name="TextBold16GreyDark" parent="@style/TextBold16">
-        <item name="android:textColor">@color/grey_dark</item>
-    </style>
-
-    <style name="TextBold16PinkLight" parent="@style/TextBold16">
-        <item name="android:textColor">@color/pink_light</item>
-    </style>
-
-    <style name="TextBold16PinkDark" parent="@style/TextBold16">
-        <item name="android:textColor">@color/pink_dark</item>
     </style>
 
     <!-- TITLE (HEADER) -->

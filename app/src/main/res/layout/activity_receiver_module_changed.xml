@@ -45,7 +45,6 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/subtitle"
                     style="@style/TextBold16BlueDark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -54,7 +53,6 @@
                     android:textIsSelectable="false" />
 
                 <TextView
-                    android:id="@+id/desc_1"
                     style="@style/TextRegular14BlueDark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -63,7 +61,6 @@
                     android:text="@string/you_need_to_calibrate_the_proximity_sensor" />
 
                 <TextView
-                    android:id="@+id/desc_2"
                     style="@style/TextRegular14BlueDark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
