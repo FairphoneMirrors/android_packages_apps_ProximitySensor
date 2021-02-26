@@ -17,7 +17,7 @@
 
     <application
         android:name=".App"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:label="@string/app_full_name"
         android:theme="@style/AppTheme"
         android:icon="@mipmap/ic_launcher_psensor"
