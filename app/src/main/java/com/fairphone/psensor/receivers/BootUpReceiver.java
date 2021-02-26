@@ -14,7 +14,6 @@ public class BootUpReceiver extends BroadcastReceiver {
         if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             return;
         }
-        Utils.handleCheckCalibrationPending(context);
 
         if (CalibrationStatusHelper.isCalibrationPending(context)) {
             CalibrationStatusHelper.setCalibrationCompleted(context);
