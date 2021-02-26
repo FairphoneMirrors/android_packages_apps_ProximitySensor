@@ -152,7 +152,7 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
     }
 
     private void init() {
-        mFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
+        mFlipper = findViewById(R.id.viewFlipper);
         mFlipper.setInAnimation(this, R.anim.slide_in_from_left);
         mFlipper.setOutAnimation(this, R.anim.slide_out_to_right);
 
@@ -190,11 +190,11 @@ public class CalibrationActivity extends Activity implements IncompatibleDeviceD
     }
 
     private void updateCalibrationStepView(View stepView, int viewStatus, int title, int instructions, int errorNotice, View.OnClickListener action, int actionLabel) {
-        final TextView viewTitle = (TextView) stepView.findViewById(R.id.current_step);
-        final TextView viewInstructions = (TextView) stepView.findViewById(R.id.instructions);
-        final TextView viewErrorNotice = (TextView) stepView.findViewById(R.id.error_notice);
+        final TextView viewTitle = stepView.findViewById(R.id.current_step);
+        final TextView viewInstructions = stepView.findViewById(R.id.instructions);
+        final TextView viewErrorNotice = stepView.findViewById(R.id.error_notice);
         final View viewInProgress = stepView.findViewById(R.id.progress_bar);
-        final Button buttonAction = (Button) stepView.findViewById(R.id.button);
+        final Button buttonAction = stepView.findViewById(R.id.button);
 
         switch (viewStatus) {
             case STEP_CURRENT:

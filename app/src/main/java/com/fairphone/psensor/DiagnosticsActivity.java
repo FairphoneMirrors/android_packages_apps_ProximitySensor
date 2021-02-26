@@ -20,37 +20,27 @@ public class DiagnosticsActivity extends Activity {
     private Sensor mProximitySensor;
 
     private TextView mSensorValueTextView;
-    private TextView mBlockValueTextView;
-    private TextView mUnblockValueTextView;
 
     private int sensorValue;
 
     private Handler mHandler;
 
-    private ProximitySensorConfiguration mPersistedConfiguration;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPersistedConfiguration = ProximitySensorConfiguration.readFromMemory();
+        ProximitySensorConfiguration persistedConfiguration = ProximitySensorConfiguration.readFromMemory();
         mHandler = new Handler();
 
 
         setContentView(R.layout.activity_diagnostics);
 
-//        mActionBar = getActionBar();
-//        if (mActionBar != null) {
-//            mActionBar.setDisplayHomeAsUpEnabled(true);
-//            mActionBar.setHomeButtonEnabled(true);
-//        }
+        mSensorValueTextView = findViewById(R.id.sensorValue);
+        TextView blockValueTextView = findViewById(R.id.blockValue);
+        TextView unblockValueTextView = findViewById(R.id.unblockValue);
 
-        mSensorValueTextView = (TextView)findViewById(R.id.sensorValue);
-        mBlockValueTextView = (TextView)findViewById(R.id.blockValue);
-        mUnblockValueTextView = (TextView)findViewById(R.id.unblockValue);
-
-        mBlockValueTextView.setText(mPersistedConfiguration.nearThreshold);
-        mUnblockValueTextView.setText(mPersistedConfiguration.farThreshold);
+        blockValueTextView.setText(persistedConfiguration.nearThreshold);
+        unblockValueTextView.setText(persistedConfiguration.farThreshold);
 
         getProximitySensor();
         setupSensorStateListener();

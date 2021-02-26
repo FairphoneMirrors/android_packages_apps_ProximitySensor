@@ -34,9 +34,9 @@ public class ReceiverModuleChangedActivity extends Activity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receiver_module_changed);
 
-        mButtonLater = (Button) findViewById(R.id.button_later);
+        mButtonLater = findViewById(R.id.button_later);
         mButtonLater.setOnClickListener(this);
-        mButtonNext = (Button) findViewById(R.id.button_next);
+        mButtonNext = findViewById(R.id.button_next);
         mButtonNext.setOnClickListener(this);
     }
 

@@ -40,12 +40,10 @@ import com.fairphone.psensor.notifications.NotificationUtils;
 
 public class UpdateFinalizerActivity extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    private TextView mTextViewMain;
     private Button mButtonNext;
     private boolean mShouldNotBeShownAgain;
 
 
-    static final String ACTION_SHOW_ON_FIRST_BOOT_AFTER_UPDATE = "com.fairphone.updatefinalizer.firstbootafterupdate";
     private CheckBox mCheckBox;
 
 
@@ -54,9 +52,9 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_finalizer);
 
-        mButtonNext = (Button) findViewById(R.id.button_next);
+        mButtonNext = findViewById(R.id.button_next);
         mButtonNext.setOnClickListener(this);
-        mCheckBox = (CheckBox) findViewById(R.id.checkBoxSuppress);
+        mCheckBox = findViewById(R.id.checkBoxSuppress);
         mCheckBox.setOnCheckedChangeListener(this);
         mShouldNotBeShownAgain = false;
 
@@ -67,8 +65,8 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
 
         }
 
-        mTextViewMain = (TextView) findViewById(R.id.instructions);
-        mTextViewMain.setText(Html.fromHtml(getString(R.string.Text)));
+        TextView textViewMain = findViewById(R.id.instructions);
+        textViewMain.setText(Html.fromHtml(getString(R.string.Text)));
 
         setAlreadyShown();
 
@@ -136,11 +134,10 @@ public class UpdateFinalizerActivity extends Activity implements View.OnClickLis
         if (mButtonNext == v) {
             if(mShouldNotBeShownAgain) {
                 disable(this);
-                finish();
-            }else {
+            } else {
                 startCalibrationIntent();
-                finish();
             }
+            finish();
         }
     }
 
