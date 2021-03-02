@@ -13,6 +13,10 @@
     <permission
         android:name="com.fairphone.psensor.permission.CALIBRATE_PROXIMITY_SENSOR"
         android:protectionLevel="signature" />
+    <!-- This permission is enforced on both sides, sending (ModuleDetect) and receiving
+      (ProximitySensor), therefore we declare uses-permission on it as well.
+      Note that this is not strictly needed on apps running as user android.uid.system. -->
+    <uses-permission android:name="com.fairphone.psensor.permission.CALIBRATE_PROXIMITY_SENSOR" />
 
     <application
         android:name=".App"
